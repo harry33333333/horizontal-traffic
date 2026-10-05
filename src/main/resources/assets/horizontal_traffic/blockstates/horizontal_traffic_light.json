@@ -1,0 +1,42 @@
+{
+  "variants": {
+    "facing=north,model=tripple,position=top": { "model": "horizontal_traffic:block/horizontal_traffic_light/tripple_top", "y": 0 },
+    "facing=east,model=tripple,position=top": { "model": "horizontal_traffic:block/horizontal_traffic_light/tripple_top", "y": 90 },
+    "facing=south,model=tripple,position=top": { "model": "horizontal_traffic:block/horizontal_traffic_light/tripple_top", "y": 180 },
+    "facing=west,model=tripple,position=top": { "model": "horizontal_traffic:block/horizontal_traffic_light/tripple_top", "y": 270 },
+    "facing=north,model=tripple,position=center": { "model": "horizontal_traffic:block/horizontal_traffic_light/tripple_center", "y": 0 },
+    "facing=east,model=tripple,position=center": { "model": "horizontal_traffic:block/horizontal_traffic_light/tripple_center", "y": 90 },
+    "facing=south,model=tripple,position=center": { "model": "horizontal_traffic:block/horizontal_traffic_light/tripple_center", "y": 180 },
+    "facing=west,model=tripple,position=center": { "model": "horizontal_traffic:block/horizontal_traffic_light/tripple_center", "y": 270 },
+    "facing=north,model=tripple,position=bottom": { "model": "horizontal_traffic:block/horizontal_traffic_light/tripple_bottom", "y": 0 },
+    "facing=east,model=tripple,position=bottom": { "model": "horizontal_traffic:block/horizontal_traffic_light/tripple_bottom", "y": 90 },
+    "facing=south,model=tripple,position=bottom": { "model": "horizontal_traffic:block/horizontal_traffic_light/tripple_bottom", "y": 180 },
+    "facing=west,model=tripple,position=bottom": { "model": "horizontal_traffic:block/horizontal_traffic_light/tripple_bottom", "y": 270 },
+
+    "facing=north,model=double,position=top": { "model": "horizontal_traffic:block/horizontal_traffic_light/double_top", "y": 0 },
+    "facing=east,model=double,position=top": { "model": "horizontal_traffic:block/horizontal_traffic_light/double_top", "y": 90 },
+    "facing=south,model=double,position=top": { "model": "horizontal_traffic:block/horizontal_traffic_light/double_top", "y": 180 },
+    "facing=west,model=double,position=top": { "model": "horizontal_traffic:block/horizontal_traffic_light/double_top", "y": 270 },
+    "facing=north,model=double,position=center": { "model": "horizontal_traffic:block/horizontal_traffic_light/double_center", "y": 0 },
+    "facing=east,model=double,position=center": { "model": "horizontal_traffic:block/horizontal_traffic_light/double_center", "y": 90 },
+    "facing=south,model=double,position=center": { "model": "horizontal_traffic:block/horizontal_traffic_light/double_center", "y": 180 },
+    "facing=west,model=double,position=center": { "model": "horizontal_traffic:block/horizontal_traffic_light/double_center", "y": 270 },
+    "facing=north,model=double,position=bottom": { "model": "horizontal_traffic:block/horizontal_traffic_light/double_bottom", "y": 0 },
+    "facing=east,model=double,position=bottom": { "model": "horizontal_traffic:block/horizontal_traffic_light/double_bottom", "y": 90 },
+    "facing=south,model=double,position=bottom": { "model": "horizontal_traffic:block/horizontal_traffic_light/double_bottom", "y": 180 },
+    "facing=west,model=double,position=bottom": { "model": "horizontal_traffic:block/horizontal_traffic_light/double_bottom", "y": 270 },
+
+    "facing=north,model=single,position=top": { "model": "horizontal_traffic:block/horizontal_traffic_light/single_top", "y": 0 },
+    "facing=east,model=single,position=top": { "model": "horizontal_traffic:block/horizontal_traffic_light/single_top", "y": 90 },
+    "facing=south,model=single,position=top": { "model": "horizontal_traffic:block/horizontal_traffic_light/single_top", "y": 180 },
+    "facing=west,model=single,position=top": { "model": "horizontal_traffic:block/horizontal_traffic_light/single_top", "y": 270 },
+    "facing=north,model=single,position=center": { "model": "horizontal_traffic:block/horizontal_traffic_light/single_center", "y": 0 },
+    "facing=east,model=single,position=center": { "model": "horizontal_traffic:block/horizontal_traffic_light/single_center", "y": 90 },
+    "facing=south,model=single,position=center": { "model": "horizontal_traffic:block/horizontal_traffic_light/single_center", "y": 180 },
+    "facing=west,model=single,position=center": { "model": "horizontal_traffic:block/horizontal_traffic_light/single_center", "y": 270 },
+    "facing=north,model=single,position=bottom": { "model": "horizontal_traffic:block/horizontal_traffic_light/single_bottom", "y": 0 },
+    "facing=east,model=single,position=bottom": { "model": "horizontal_traffic:block/horizontal_traffic_light/single_bottom", "y": 90 },
+    "facing=south,model=single,position=bottom": { "model": "horizontal_traffic:block/horizontal_traffic_light/single_bottom", "y": 180 },
+    "facing=west,model=single,position=bottom": { "model": "horizontal_traffic:block/horizontal_traffic_light/single_bottom", "y": 270 }
+  }
+}

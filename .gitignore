@@ -1,0 +1,22 @@
+# Gradle
+.gradle/
+build/
+
+# Keep wrapper and local libs
+!gradle/wrapper/gradle-wrapper.jar
+!libs/*.jar
+
+# IDE & Editor
+.idea/
+*.iml
+.vscode/
+*.ipr
+*.iws
+
+# Logs
+*.log
+latest.log
+
+# System
+.DS_Store
+Thumbs.db

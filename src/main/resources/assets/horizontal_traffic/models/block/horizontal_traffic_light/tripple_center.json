@@ -1,0 +1,947 @@
+{
+  "credit": "Horizontal Traffic Mod",
+  "textures": {
+    "base": "trafficcraft:block/anvil",
+    "back": "trafficcraft:block/traffic_light/background",
+    "particle": "trafficcraft:block/sign",
+    "post": "trafficcraft:block/sign"
+  },
+  "elements": [
+    {
+      "name": "HorizontalSupport",
+      "from": [
+        0,
+        7,
+        7
+      ],
+      "to": [
+        16,
+        9,
+        9
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            2
+          ],
+          "texture": "#post"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            2,
+            2
+          ],
+          "texture": "#post"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            2
+          ],
+          "texture": "#post"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            2,
+            2
+          ],
+          "texture": "#post"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            2
+          ],
+          "texture": "#post"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            2
+          ],
+          "texture": "#post"
+        }
+      }
+    },
+    {
+      "name": "Bracket",
+      "from": [
+        6.0,
+        7.0,
+        5.0
+      ],
+      "to": [
+        10.0,
+        9.0,
+        7.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            4,
+            4
+          ],
+          "texture": "#post"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            2,
+            4
+          ],
+          "texture": "#post"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            4,
+            4
+          ],
+          "texture": "#post"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            2,
+            4
+          ],
+          "texture": "#post"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            4,
+            2
+          ],
+          "rotation": 90,
+          "texture": "#post"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            4,
+            2
+          ],
+          "rotation": 270,
+          "texture": "#post"
+        }
+      }
+    },
+    {
+      "name": "Housing",
+      "from": [
+        0.5,
+        4.0,
+        3.0
+      ],
+      "to": [
+        15.5,
+        12.0,
+        5.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            8
+          ],
+          "texture": "#back"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            2,
+            8
+          ],
+          "texture": "#base"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            8
+          ],
+          "texture": "#base"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            2,
+            8
+          ],
+          "texture": "#base"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            2
+          ],
+          "texture": "#base"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            2
+          ],
+          "texture": "#base"
+        }
+      }
+    },
+    {
+      "name": "HousingBack",
+      "from": [
+        1.0,
+        5.0,
+        5.0
+      ],
+      "to": [
+        15.0,
+        11.0,
+        6.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            14,
+            6
+          ],
+          "texture": "#base"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            1,
+            6
+          ],
+          "texture": "#base"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            14,
+            6
+          ],
+          "texture": "#base"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            1,
+            6
+          ],
+          "texture": "#base"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            14,
+            1
+          ],
+          "texture": "#base"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            14,
+            1
+          ],
+          "texture": "#base"
+        }
+      }
+    },
+    {
+      "name": "VisorTop_0",
+      "from": [
+        1.5,
+        10.0,
+        0.5
+      ],
+      "to": [
+        5.5,
+        10.5,
+        3.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            4,
+            0.5
+          ],
+          "texture": "#back"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            0.5
+          ],
+          "texture": "#back"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            4,
+            0.5
+          ],
+          "texture": "#back"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            0.5
+          ],
+          "texture": "#back"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            4
+          ],
+          "rotation": 90,
+          "texture": "#back"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            4
+          ],
+          "rotation": 270,
+          "texture": "#back"
+        }
+      }
+    },
+    {
+      "name": "VisorLeft_0",
+      "from": [
+        1.0,
+        7.5,
+        0.5
+      ],
+      "to": [
+        1.5,
+        10.5,
+        3.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            2.5
+          ],
+          "rotation": 90,
+          "texture": "#back"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            2.5
+          ],
+          "rotation": 270,
+          "texture": "#back"
+        }
+      }
+    },
+    {
+      "name": "VisorRight_0",
+      "from": [
+        5.5,
+        7.5,
+        0.5
+      ],
+      "to": [
+        6.0,
+        10.5,
+        3.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            2.5
+          ],
+          "rotation": 90,
+          "texture": "#back"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            2.5
+          ],
+          "rotation": 270,
+          "texture": "#back"
+        }
+      }
+    },
+    {
+      "name": "VisorTop_1",
+      "from": [
+        6.0,
+        10.0,
+        0.5
+      ],
+      "to": [
+        10.0,
+        10.5,
+        3.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            4,
+            0.5
+          ],
+          "texture": "#back"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            0.5
+          ],
+          "texture": "#back"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            4,
+            0.5
+          ],
+          "texture": "#back"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            0.5
+          ],
+          "texture": "#back"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            4
+          ],
+          "rotation": 90,
+          "texture": "#back"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            4
+          ],
+          "rotation": 270,
+          "texture": "#back"
+        }
+      }
+    },
+    {
+      "name": "VisorLeft_1",
+      "from": [
+        5.5,
+        7.5,
+        0.5
+      ],
+      "to": [
+        6.0,
+        10.5,
+        3.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            2.5
+          ],
+          "rotation": 90,
+          "texture": "#back"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            2.5
+          ],
+          "rotation": 270,
+          "texture": "#back"
+        }
+      }
+    },
+    {
+      "name": "VisorRight_1",
+      "from": [
+        10.0,
+        7.5,
+        0.5
+      ],
+      "to": [
+        10.5,
+        10.5,
+        3.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            2.5
+          ],
+          "rotation": 90,
+          "texture": "#back"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            2.5
+          ],
+          "rotation": 270,
+          "texture": "#back"
+        }
+      }
+    },
+    {
+      "name": "VisorTop_2",
+      "from": [
+        10.5,
+        10.0,
+        0.5
+      ],
+      "to": [
+        14.5,
+        10.5,
+        3.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            4,
+            0.5
+          ],
+          "texture": "#back"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            0.5
+          ],
+          "texture": "#back"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            4,
+            0.5
+          ],
+          "texture": "#back"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            0.5
+          ],
+          "texture": "#back"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            4
+          ],
+          "rotation": 90,
+          "texture": "#back"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            4
+          ],
+          "rotation": 270,
+          "texture": "#back"
+        }
+      }
+    },
+    {
+      "name": "VisorLeft_2",
+      "from": [
+        10.0,
+        7.5,
+        0.5
+      ],
+      "to": [
+        10.5,
+        10.5,
+        3.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            2.5
+          ],
+          "rotation": 90,
+          "texture": "#back"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            2.5
+          ],
+          "rotation": 270,
+          "texture": "#back"
+        }
+      }
+    },
+    {
+      "name": "VisorRight_2",
+      "from": [
+        14.5,
+        7.5,
+        0.5
+      ],
+      "to": [
+        15.0,
+        10.5,
+        3.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            3
+          ],
+          "texture": "#back"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            2.5
+          ],
+          "rotation": 90,
+          "texture": "#back"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            0.5,
+            2.5
+          ],
+          "rotation": 270,
+          "texture": "#back"
+        }
+      }
+    }
+  ],
+  "display": {
+    "gui": {
+      "rotation": [
+        30,
+        225,
+        0
+      ],
+      "translation": [
+        -1.5,
+        1,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        0.6
+      ]
+    }
+  }
+}
