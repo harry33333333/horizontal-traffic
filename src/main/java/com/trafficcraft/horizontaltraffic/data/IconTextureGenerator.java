@@ -163,19 +163,23 @@ public class IconTextureGenerator {
         }
         map.put("left_right", lr);
 
-        // 6. SLANTED_LEFT (斜向左转 ↖) - Matching user hand-drawn sketch
+        // 6. SLANTED_LEFT (斜向左转 ↖) - Matching user hand-drawn sketch, bold 2px lines
         boolean[][] sLeft = new boolean[16][16];
-        // Top horizontal barb
-        for (int x = 1; x <= 6; x++) sLeft[1][x] = true;
-        // Left vertical barb
-        for (int y = 1; y <= 6; y++) sLeft[y][1] = true;
-        // 2px diagonal shaft from (1,1) down to (13,14)
-        for (int i = 0; i <= 12; i++) {
-            int x = 1 + i;
-            int y = 1 + i;
-            if (x < 16 && y < 16) {
+        // Top horizontal barb (2px thick)
+        for (int y = 1; y <= 2; y++) {
+            for (int x = 1; x <= 6; x++) sLeft[y][x] = true;
+        }
+        // Left vertical barb (2px thick)
+        for (int y = 1; y <= 6; y++) {
+            sLeft[y][1] = sLeft[y][2] = true;
+        }
+        // 2px diagonal shaft from (3,3) down to (13,13)
+        for (int i = 0; i <= 10; i++) {
+            int y = 3 + i;
+            int x = 3 + i;
+            if (y < 16 && x < 16) {
                 sLeft[y][x] = true;
-                if (y + 1 < 16) sLeft[y + 1][x] = true;
+                if (x + 1 < 16) sLeft[y][x + 1] = true;
             }
         }
         map.put("slanted_left", sLeft);
@@ -189,18 +193,22 @@ public class IconTextureGenerator {
         }
         map.put("slanted_right", sRight);
 
-        // 8. SLANTED_LEFT_AND_RIGHT (双向斜箭头 ↖ ↗) - Matching user hand-drawn sketch exactly
+        // 8. SLANTED_LEFT_AND_RIGHT (双向斜箭头 ↖ ↗) - Matching user hand-drawn sketch, bold 2px lines
         boolean[][] slr = new boolean[16][16];
-        // Top horizontal barbs
-        for (int x = 1; x <= 6; x++) slr[1][x] = true;
-        // Left vertical barb
-        for (int y = 1; y <= 6; y++) slr[y][1] = true;
-        // 2px left diagonal shaft from (1,1) to (7,7)
-        for (int i = 0; i <= 6; i++) {
-            int x = 1 + i;
-            int y = 1 + i;
+        // Top horizontal barbs (2px thick)
+        for (int y = 1; y <= 2; y++) {
+            for (int x = 1; x <= 6; x++) slr[y][x] = true;
+        }
+        // Left vertical barb (2px thick)
+        for (int y = 1; y <= 6; y++) {
+            slr[y][1] = slr[y][2] = true;
+        }
+        // 2px left diagonal shaft from (3,3) to (7,7)
+        for (int i = 0; i <= 4; i++) {
+            int y = 3 + i;
+            int x = 3 + i;
             slr[y][x] = true;
-            if (y + 1 < 16) slr[y + 1][x] = true;
+            slr[y][x + 1] = true;
         }
 
         // Mirror left branch to right branch
@@ -210,8 +218,8 @@ public class IconTextureGenerator {
             }
         }
 
-        // Central vertical stem at bottom x=7..8, y=8..14
-        for (int y = 8; y <= 14; y++) {
+        // Central vertical stem at bottom x=7..8, y=7..14
+        for (int y = 7; y <= 14; y++) {
             slr[y][7] = true;
             slr[y][8] = true;
         }
