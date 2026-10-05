@@ -68,7 +68,6 @@ public class IconTextureGenerator {
         map.put("left_u_turn", leftUTurn);
 
         // 3. LEFT_STRAIGHT_RIGHT (左转 + 直行 + 右转)
-        // Distinct, separated arrows: straight arrow on top (y=1..5), 2 empty rows at y=6..7, side branches at y=8..13
         boolean[][] lsr = new boolean[16][16];
         for (int y = 5; y <= 14; y++) {
             lsr[y][7] = true;
@@ -164,19 +163,21 @@ public class IconTextureGenerator {
         }
         map.put("left_right", lr);
 
-        // 6. SLANTED_LEFT (斜向左转 ↖)
+        // 6. SLANTED_LEFT (斜向左转 ↖) - Matching user hand-drawn sketch
         boolean[][] sLeft = new boolean[16][16];
-        for (int i = 0; i <= 10; i++) {
-            int x = 13 - i;
-            int y = 13 - i;
-            sLeft[y][x] = true;
-            sLeft[y][x - 1] = true;
+        // Top horizontal barb
+        for (int x = 1; x <= 6; x++) sLeft[1][x] = true;
+        // Left vertical barb
+        for (int y = 1; y <= 6; y++) sLeft[y][1] = true;
+        // 2px diagonal shaft from (1,1) down to (13,14)
+        for (int i = 0; i <= 12; i++) {
+            int x = 1 + i;
+            int y = 1 + i;
+            if (x < 16 && y < 16) {
+                sLeft[y][x] = true;
+                if (y + 1 < 16) sLeft[y + 1][x] = true;
+            }
         }
-        sLeft[1][2] = sLeft[1][3] = sLeft[1][4] = true;
-        for (int x = 1; x <= 4; x++) sLeft[2][x] = true;
-        for (int x = 1; x <= 3; x++) sLeft[3][x] = true;
-        for (int x = 0; x <= 2; x++) sLeft[4][x] = true;
-        sLeft[5][1] = sLeft[5][2] = true;
         map.put("slanted_left", sLeft);
 
         // 7. SLANTED_RIGHT (斜向右转 ↗) - Horizontal mirror of SLANTED_LEFT
@@ -188,34 +189,31 @@ public class IconTextureGenerator {
         }
         map.put("slanted_right", sRight);
 
-        // 8. SLANTED_LEFT_AND_RIGHT (双向斜箭头 ↖ ↗)
-        // Two distinct diverging 45° arrows pointing to upper-left and upper-right corners with central trunk
+        // 8. SLANTED_LEFT_AND_RIGHT (双向斜箭头 ↖ ↗) - Matching user hand-drawn sketch exactly
         boolean[][] slr = new boolean[16][16];
-        for (int y = 10; y <= 14; y++) {
-            slr[y][7] = true;
-            slr[y][8] = true;
-        }
-        // Left diagonal stem from (7,10) to (2,5)
+        // Top horizontal barbs
+        for (int x = 1; x <= 6; x++) slr[1][x] = true;
+        // Left vertical barb
+        for (int y = 1; y <= 6; y++) slr[y][1] = true;
+        // 2px left diagonal shaft from (1,1) to (7,7)
         for (int i = 0; i <= 6; i++) {
-            int x = 7 - i;
-            int y = 10 - i;
-            if (x >= 0 && x < 16 && y >= 0 && y < 16) {
-                slr[y][x] = true;
-                if (x - 1 >= 0) slr[y][x - 1] = true;
-            }
+            int x = 1 + i;
+            int y = 1 + i;
+            slr[y][x] = true;
+            if (y + 1 < 16) slr[y + 1][x] = true;
         }
-        // Left arrowhead pointing outward to ↖
-        slr[1][2] = slr[1][3] = slr[1][4] = true;
-        for (int x = 1; x <= 4; x++) slr[2][x] = true;
-        for (int x = 1; x <= 3; x++) slr[3][x] = true;
-        for (int x = 0; x <= 2; x++) slr[4][x] = true;
-        slr[5][1] = slr[5][2] = true;
 
-        // Right side is exact symmetrical mirror (branching to ↗)
+        // Mirror left branch to right branch
         for (int y = 0; y < 16; y++) {
             for (int x = 0; x < 8; x++) {
                 slr[y][15 - x] = slr[y][x];
             }
+        }
+
+        // Central vertical stem at bottom x=7..8, y=8..14
+        for (int y = 8; y <= 14; y++) {
+            slr[y][7] = true;
+            slr[y][8] = true;
         }
 
         map.put("slanted_left_right", slr);
