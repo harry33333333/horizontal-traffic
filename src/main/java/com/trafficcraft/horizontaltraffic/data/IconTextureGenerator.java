@@ -18,51 +18,50 @@ public class IconTextureGenerator {
     public static Map<String, boolean[][]> getIconGrids() {
         Map<String, boolean[][]> map = new LinkedHashMap<>();
 
-        // 1. U_TURN (掉头)
+        // 1. U_TURN (掉头) - Matching TrafficCraft chevron style
         boolean[][] uTurn = new boolean[16][16];
-        for (int y = 5; y <= 13; y++) {
+        for (int y = 3; y <= 14; y++) {
             uTurn[y][10] = true;
             uTurn[y][11] = true;
         }
-        uTurn[4][9] = true; uTurn[4][10] = true;
-        uTurn[3][7] = true; uTurn[3][8] = true; uTurn[3][9] = true;
-        uTurn[4][5] = true; uTurn[4][6] = true;
-        uTurn[5][4] = true; uTurn[5][5] = true;
-        uTurn[6][4] = true; uTurn[6][5] = true;
-        uTurn[7][4] = true; uTurn[7][5] = true;
-        // Arrowhead pointing down
-        for (int x = 1; x <= 8; x++) uTurn[8][x] = true;
-        for (int x = 2; x <= 7; x++) uTurn[9][x] = true;
-        for (int x = 3; x <= 6; x++) uTurn[10][x] = true;
-        uTurn[11][4] = true; uTurn[11][5] = true;
+        for (int x = 5; x <= 9; x++) uTurn[1][x] = true;
+        uTurn[2][4] = true; uTurn[2][5] = true; uTurn[2][9] = true; uTurn[2][10] = true;
+        for (int y = 3; y <= 7; y++) {
+            uTurn[y][3] = true;
+            uTurn[y][4] = true;
+        }
+        // Downward open chevron
+        uTurn[8][0] = true; uTurn[8][1] = true; uTurn[8][6] = true; uTurn[8][7] = true;
+        uTurn[9][0] = true; uTurn[9][1] = true; uTurn[9][2] = true;
+        uTurn[9][5] = true; uTurn[9][6] = true; uTurn[9][7] = true;
+        for (int x = 1; x <= 6; x++) uTurn[10][x] = true;
+        for (int x = 2; x <= 5; x++) uTurn[11][x] = true;
+        uTurn[12][3] = true; uTurn[12][4] = true;
         map.put("u_turn", uTurn);
 
         // 2. LEFT_AND_U_TURN (左转 + 掉头: 左转在上方，掉头在下方)
         boolean[][] leftUTurn = new boolean[16][16];
-        // Trunk on the right (x=9..10)
+        // Trunk on right at x=9..10
         for (int y = 2; y <= 14; y++) {
             leftUTurn[y][9] = true;
             leftUTurn[y][10] = true;
         }
-        // Top part: Left Turn (←) at y=3..4
-        for (int x = 3; x <= 8; x++) {
+        // Top: Left turn arrow (←)
+        for (int x = 3; x <= 9; x++) {
             leftUTurn[3][x] = true;
             leftUTurn[4][x] = true;
         }
-        leftUTurn[1][4] = true;
-        leftUTurn[2][3] = true; leftUTurn[2][4] = true;
-        leftUTurn[3][1] = true; leftUTurn[3][2] = true;
-        leftUTurn[4][1] = true; leftUTurn[4][2] = true;
-        leftUTurn[5][3] = true; leftUTurn[5][4] = true;
-        leftUTurn[6][4] = true;
-
-        // Bottom part: U-Turn (↓) branching off trunk at y=7..8
-        for (int x = 4; x <= 8; x++) leftUTurn[7][x] = true;
-        leftUTurn[8][3] = true; leftUTurn[8][4] = true;
-        leftUTurn[8][7] = true; leftUTurn[8][8] = true;
+        leftUTurn[1][4] = true; leftUTurn[1][5] = true;
+        leftUTurn[2][3] = true; leftUTurn[2][4] = true; leftUTurn[2][5] = true;
+        leftUTurn[3][1] = true; leftUTurn[3][2] = true; leftUTurn[3][3] = true;
+        leftUTurn[4][1] = true; leftUTurn[4][2] = true; leftUTurn[4][3] = true;
+        leftUTurn[5][3] = true; leftUTurn[5][4] = true; leftUTurn[5][5] = true;
+        leftUTurn[6][4] = true; leftUTurn[6][5] = true;
+        // Bottom: U-turn arch & downward chevron
+        for (int x = 5; x <= 9; x++) leftUTurn[7][x] = true;
+        leftUTurn[8][4] = true; leftUTurn[8][5] = true; leftUTurn[8][8] = true; leftUTurn[8][9] = true;
         leftUTurn[9][3] = true; leftUTurn[9][4] = true;
-        leftUTurn[10][3] = true; leftUTurn[10][4] = true;
-        // Downward arrowhead for U-turn at y=11..13
+        leftUTurn[10][1] = true; leftUTurn[10][2] = true; leftUTurn[10][5] = true; leftUTurn[10][6] = true;
         for (int x = 1; x <= 6; x++) leftUTurn[11][x] = true;
         for (int x = 2; x <= 5; x++) leftUTurn[12][x] = true;
         leftUTurn[13][3] = true; leftUTurn[13][4] = true;
@@ -70,120 +69,112 @@ public class IconTextureGenerator {
 
         // 3. LEFT_STRAIGHT_RIGHT (左转 + 直行 + 右转)
         boolean[][] lsr = new boolean[16][16];
-        for (int y = 5; y <= 14; y++) {
+        for (int y = 6; y <= 14; y++) {
             lsr[y][7] = true;
             lsr[y][8] = true;
         }
-        // Straight arrowhead
+        // Straight open chevron at top
         lsr[1][7] = true; lsr[1][8] = true;
         for (int x = 6; x <= 9; x++) lsr[2][x] = true;
         for (int x = 5; x <= 10; x++) lsr[3][x] = true;
-        for (int x = 6; x <= 9; x++) lsr[4][x] = true;
-        lsr[5][7] = true; lsr[5][8] = true;
-        // Left branch & arrowhead
-        for (int x = 2; x <= 6; x++) {
+        for (int x = 4; x <= 6; x++) lsr[4][x] = true;
+        for (int x = 9; x <= 11; x++) lsr[4][x] = true;
+        for (int x = 3; x <= 5; x++) lsr[5][x] = true;
+        for (int x = 10; x <= 12; x++) lsr[5][x] = true;
+        // Crossbar
+        for (int x = 2; x <= 13; x++) {
             lsr[9][x] = true;
             lsr[10][x] = true;
         }
-        lsr[7][3] = true;
-        lsr[8][2] = true; lsr[8][3] = true;
-        lsr[9][1] = true; lsr[9][2] = true; lsr[9][3] = true;
-        lsr[10][1] = true; lsr[10][2] = true; lsr[10][3] = true;
-        lsr[11][2] = true; lsr[11][3] = true;
-        lsr[12][3] = true;
-        // Right branch & arrowhead
-        for (int x = 9; x <= 13; x++) {
-            lsr[9][x] = true;
-            lsr[10][x] = true;
+        // Left chevron
+        int[][] leftWings = {
+                {6, 3, 4}, {7, 2, 4}, {8, 1, 3}, {9, 0, 2},
+                {10, 0, 2}, {11, 1, 3}, {12, 2, 4}, {13, 3, 4}
+        };
+        for (int[] w : leftWings) {
+            for (int x = w[1]; x <= w[2]; x++) lsr[w[0]][x] = true;
         }
-        lsr[7][12] = true;
-        lsr[8][12] = true; lsr[8][13] = true;
-        lsr[9][12] = true; lsr[9][13] = true; lsr[9][14] = true;
-        lsr[10][12] = true; lsr[10][13] = true; lsr[10][14] = true;
-        lsr[11][12] = true; lsr[11][13] = true;
-        lsr[12][12] = true;
+        // Right chevron
+        int[][] rightWings = {
+                {6, 11, 12}, {7, 11, 13}, {8, 12, 14}, {9, 13, 15},
+                {10, 13, 15}, {11, 12, 14}, {12, 11, 13}, {13, 11, 12}
+        };
+        for (int[] w : rightWings) {
+            for (int x = w[1]; x <= w[2]; x++) lsr[w[0]][x] = true;
+        }
         map.put("left_straight_right", lsr);
 
         // 4. RIGHT_AND_U_TURN (右转 + 掉头: 右转在上方，掉头在下方)
         boolean[][] rightUTurn = new boolean[16][16];
-        // Trunk on the left (x=5..6)
+        // Trunk on left at x=6..7
         for (int y = 2; y <= 14; y++) {
-            rightUTurn[y][5] = true;
             rightUTurn[y][6] = true;
+            rightUTurn[y][7] = true;
         }
-        // Top part: Right Turn (→) at y=3..4
-        for (int x = 7; x <= 12; x++) {
+        // Top: Right turn arrow (→)
+        for (int x = 7; x <= 13; x++) {
             rightUTurn[3][x] = true;
             rightUTurn[4][x] = true;
         }
-        rightUTurn[1][11] = true;
-        rightUTurn[2][11] = true; rightUTurn[2][12] = true;
-        rightUTurn[3][13] = true; rightUTurn[3][14] = true;
-        rightUTurn[4][13] = true; rightUTurn[4][14] = true;
-        rightUTurn[5][11] = true; rightUTurn[5][12] = true;
-        rightUTurn[6][11] = true;
-
-        // Bottom part: U-Turn (↓) branching off trunk at y=7..8
-        for (int x = 1; x <= 4; x++) rightUTurn[7][x] = true;
-        rightUTurn[8][1] = true; rightUTurn[8][2] = true;
-        rightUTurn[8][4] = true;
+        rightUTurn[1][10] = true; rightUTurn[1][11] = true;
+        rightUTurn[2][10] = true; rightUTurn[2][11] = true; rightUTurn[2][12] = true;
+        rightUTurn[3][12] = true; rightUTurn[3][13] = true; rightUTurn[3][14] = true;
+        rightUTurn[4][12] = true; rightUTurn[4][13] = true; rightUTurn[4][14] = true;
+        rightUTurn[5][10] = true; rightUTurn[5][11] = true; rightUTurn[5][12] = true;
+        rightUTurn[6][10] = true; rightUTurn[6][11] = true;
+        // Bottom: U-turn arch & downward chevron
+        for (int x = 2; x <= 6; x++) rightUTurn[7][x] = true;
+        rightUTurn[8][1] = true; rightUTurn[8][2] = true; rightUTurn[8][5] = true; rightUTurn[8][6] = true;
         rightUTurn[9][1] = true; rightUTurn[9][2] = true;
-        rightUTurn[10][1] = true; rightUTurn[10][2] = true;
-        // Downward arrowhead for U-turn at y=11..13
+        rightUTurn[10][0] = true; rightUTurn[10][1] = true; rightUTurn[10][3] = true; rightUTurn[10][4] = true;
         for (int x = 0; x <= 4; x++) rightUTurn[11][x] = true;
         for (int x = 1; x <= 3; x++) rightUTurn[12][x] = true;
         rightUTurn[13][1] = true; rightUTurn[13][2] = true;
         map.put("right_u_turn", rightUTurn);
 
-        // 5. LEFT_AND_RIGHT (左转 + 右转)
+        // 5. LEFT_AND_RIGHT (左转 + 右转: 居中，大箭头)
         boolean[][] lr = new boolean[16][16];
-        for (int y = 10; y <= 14; y++) {
+        // Horizontal bar centered at y=7..8
+        for (int x = 2; x <= 13; x++) {
+            lr[7][x] = true;
+            lr[8][x] = true;
+        }
+        // Vertical stem down to y=14
+        for (int y = 9; y <= 14; y++) {
             lr[y][7] = true;
             lr[y][8] = true;
         }
-        // Left branch & arrowhead
-        for (int x = 2; x <= 7; x++) {
-            lr[9][x] = true;
-            lr[10][x] = true;
+        // Bold 10px-tall left chevron
+        int[][] lrLeftWings = {
+                {3, 4, 5}, {4, 3, 5}, {5, 2, 4}, {6, 1, 3}, {7, 1, 3},
+                {8, 1, 3}, {9, 1, 3}, {10, 2, 4}, {11, 3, 5}, {12, 4, 5}
+        };
+        for (int[] w : lrLeftWings) {
+            for (int x = w[1]; x <= w[2]; x++) lr[w[0]][x] = true;
         }
-        lr[7][3] = true;
-        lr[8][2] = true; lr[8][3] = true;
-        lr[9][1] = true; lr[9][2] = true; lr[9][3] = true;
-        lr[10][1] = true; lr[10][2] = true; lr[10][3] = true;
-        lr[11][2] = true; lr[11][3] = true;
-        lr[12][3] = true;
-        // Right branch & arrowhead
-        for (int x = 8; x <= 13; x++) {
-            lr[9][x] = true;
-            lr[10][x] = true;
+        // Bold 10px-tall right chevron
+        int[][] lrRightWings = {
+                {3, 10, 11}, {4, 10, 12}, {5, 11, 13}, {6, 12, 14}, {7, 12, 14},
+                {8, 12, 14}, {9, 12, 14}, {10, 11, 13}, {11, 10, 12}, {12, 10, 11}
+        };
+        for (int[] w : lrRightWings) {
+            for (int x = w[1]; x <= w[2]; x++) lr[w[0]][x] = true;
         }
-        lr[7][12] = true;
-        lr[8][12] = true; lr[8][13] = true;
-        lr[9][12] = true; lr[9][13] = true; lr[9][14] = true;
-        lr[10][12] = true; lr[10][13] = true; lr[10][14] = true;
-        lr[11][12] = true; lr[11][13] = true;
-        lr[12][12] = true;
         map.put("left_right", lr);
 
         // 6. SLANTED_LEFT (斜向左转 ↖)
         boolean[][] sLeft = new boolean[16][16];
-        // Diagonal stem from (12,13) up to (5,6)
-        for (int i = 0; i <= 7; i++) {
-            int x = 12 - i;
+        for (int i = 0; i <= 10; i++) {
+            int x = 13 - i;
             int y = 13 - i;
             sLeft[y][x] = true;
-            sLeft[y][x + 1] = true;
-            sLeft[y - 1][x] = true;
+            sLeft[y][x - 1] = true;
         }
-        // Diagonal arrowhead pointing to (2,2)
-        sLeft[1][2] = true; sLeft[1][3] = true;
-        sLeft[2][1] = true; sLeft[2][2] = true; sLeft[2][3] = true; sLeft[2][4] = true;
-        sLeft[3][1] = true; sLeft[3][2] = true; sLeft[3][3] = true; sLeft[3][4] = true; sLeft[3][5] = true;
-        sLeft[4][2] = true; sLeft[4][3] = true; sLeft[4][4] = true; sLeft[4][5] = true;
-        sLeft[5][3] = true; sLeft[5][4] = true; sLeft[5][5] = true;
-        // Wings along cross-axis
-        sLeft[1][4] = true; sLeft[1][5] = true;
-        sLeft[4][1] = true; sLeft[5][1] = true;
+        for (int x = 2; x <= 8; x++) sLeft[1][x] = true;
+        for (int x = 1; x <= 8; x++) sLeft[2][x] = true;
+        for (int y = 2; y <= 8; y++) sLeft[y][1] = true;
+        for (int y = 1; y <= 8; y++) sLeft[y][2] = true;
+        sLeft[3][3] = true; sLeft[3][4] = true; sLeft[4][3] = true;
         map.put("slanted_left", sLeft);
 
         // 7. SLANTED_RIGHT (斜向右转 ↗) - Horizontal mirror of SLANTED_LEFT
@@ -197,35 +188,38 @@ public class IconTextureGenerator {
 
         // 8. SLANTED_LEFT_AND_RIGHT (双向斜箭头 ↖ ↗)
         boolean[][] slr = new boolean[16][16];
-        for (int y = 11; y <= 14; y++) {
+        for (int y = 10; y <= 14; y++) {
             slr[y][7] = true;
             slr[y][8] = true;
         }
         // Left slanted branch to ↖
-        for (int i = 0; i <= 5; i++) {
+        for (int i = 0; i <= 4; i++) {
             int x = 7 - i;
-            int y = 11 - i;
-            slr[y][x] = true;
-            slr[y][x + 1] = true;
-        }
-        // Left diagonal arrowhead at (2,3)
-        slr[2][3] = true; slr[2][4] = true;
-        slr[3][2] = true; slr[3][3] = true; slr[3][4] = true;
-        slr[4][2] = true; slr[4][3] = true; slr[4][4] = true;
-        slr[5][3] = true; slr[5][4] = true;
-
-        // Right slanted branch to ↗
-        for (int i = 0; i <= 5; i++) {
-            int x = 8 + i;
-            int y = 11 - i;
+            int y = 10 - i;
             slr[y][x] = true;
             slr[y][x - 1] = true;
         }
-        // Right diagonal arrowhead at (13,3)
-        slr[2][11] = true; slr[2][12] = true;
-        slr[3][11] = true; slr[3][12] = true; slr[3][13] = true;
-        slr[4][11] = true; slr[4][12] = true; slr[4][13] = true;
-        slr[5][11] = true; slr[5][12] = true;
+        for (int x = 2; x <= 6; x++) slr[1][x] = true;
+        for (int x = 1; x <= 6; x++) slr[2][x] = true;
+        for (int y = 2; y <= 6; y++) slr[y][1] = true;
+        for (int y = 1; y <= 6; y++) slr[y][2] = true;
+        slr[3][3] = true; slr[4][3] = true; slr[3][4] = true;
+        slr[5][3] = true; slr[5][4] = true;
+
+        // Right slanted branch to ↗
+        for (int i = 0; i <= 4; i++) {
+            int x = 8 + i;
+            int y = 10 - i;
+            slr[y][x] = true;
+            slr[y][x + 1] = true;
+        }
+        for (int x = 9; x <= 13; x++) slr[1][x] = true;
+        for (int x = 9; x <= 14; x++) slr[2][x] = true;
+        for (int y = 2; y <= 6; y++) slr[y][14] = true;
+        for (int y = 1; y <= 6; y++) slr[y][13] = true;
+        slr[3][12] = true; slr[4][12] = true; slr[3][11] = true;
+        slr[5][12] = true; slr[5][11] = true;
+
         map.put("slanted_left_right", slr);
 
         return map;
@@ -294,6 +288,13 @@ public class IconTextureGenerator {
             boolean[][] grid = entry.getValue();
             int startX = colIndex * 16;
             int startY = 16; // row 1 (v=1)
+
+            // Clear the 16x16 slot first to ensure no leftover pixels from previous runs
+            for (int y = 0; y < 16; y++) {
+                for (int x = 0; x < 16; x++) {
+                    iconsSheet.setRGB(startX + x, startY + y, 0);
+                }
+            }
 
             for (int y = 0; y < 16; y++) {
                 for (int x = 0; x < 16; x++) {
