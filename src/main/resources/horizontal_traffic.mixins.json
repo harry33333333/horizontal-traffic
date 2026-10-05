@@ -11,7 +11,8 @@
   "client": [
     "DLNumberPickerAccessor",
     "TrafficLightConfigScreenMixin",
-    "TrafficLightControlSettingsMixin"
+    "TrafficLightControlSettingsMixin",
+    "TrafficLightGeneralSettingsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

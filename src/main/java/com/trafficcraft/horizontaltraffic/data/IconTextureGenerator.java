@@ -37,32 +37,35 @@ public class IconTextureGenerator {
         uTurn[11][4] = true; uTurn[11][5] = true;
         map.put("u_turn", uTurn);
 
-        // 2. LEFT_AND_U_TURN (左转 + 掉头)
+        // 2. LEFT_AND_U_TURN (左转 + 掉头: 左转在上方，掉头在下方)
         boolean[][] leftUTurn = new boolean[16][16];
-        for (int y = 5; y <= 13; y++) {
-            leftUTurn[y][11] = true;
-            leftUTurn[y][12] = true;
+        // Trunk on the right (x=9..10)
+        for (int y = 2; y <= 14; y++) {
+            leftUTurn[y][9] = true;
+            leftUTurn[y][10] = true;
         }
-        leftUTurn[4][10] = true; leftUTurn[4][11] = true;
-        leftUTurn[3][8] = true; leftUTurn[3][9] = true; leftUTurn[3][10] = true;
-        leftUTurn[4][7] = true; leftUTurn[4][8] = true;
-        leftUTurn[5][6] = true; leftUTurn[5][7] = true;
-        // U-turn arrowhead pointing down at x=6..7
-        for (int x = 4; x <= 9; x++) leftUTurn[6][x] = true;
-        for (int x = 5; x <= 8; x++) leftUTurn[7][x] = true;
-        leftUTurn[8][6] = true; leftUTurn[8][7] = true;
-        // Left-turn branch at y=10..11
-        for (int x = 3; x <= 10; x++) {
-            leftUTurn[10][x] = true;
-            leftUTurn[11][x] = true;
+        // Top part: Left Turn (←) at y=3..4
+        for (int x = 3; x <= 8; x++) {
+            leftUTurn[3][x] = true;
+            leftUTurn[4][x] = true;
         }
-        // Left arrowhead
-        leftUTurn[8][3] = true;
-        leftUTurn[9][2] = true; leftUTurn[9][3] = true;
-        leftUTurn[10][1] = true; leftUTurn[10][2] = true; leftUTurn[10][3] = true;
-        leftUTurn[11][1] = true; leftUTurn[11][2] = true; leftUTurn[11][3] = true;
-        leftUTurn[12][2] = true; leftUTurn[12][3] = true;
-        leftUTurn[13][3] = true;
+        leftUTurn[1][4] = true;
+        leftUTurn[2][3] = true; leftUTurn[2][4] = true;
+        leftUTurn[3][1] = true; leftUTurn[3][2] = true;
+        leftUTurn[4][1] = true; leftUTurn[4][2] = true;
+        leftUTurn[5][3] = true; leftUTurn[5][4] = true;
+        leftUTurn[6][4] = true;
+
+        // Bottom part: U-Turn (↓) branching off trunk at y=7..8
+        for (int x = 4; x <= 8; x++) leftUTurn[7][x] = true;
+        leftUTurn[8][3] = true; leftUTurn[8][4] = true;
+        leftUTurn[8][7] = true; leftUTurn[8][8] = true;
+        leftUTurn[9][3] = true; leftUTurn[9][4] = true;
+        leftUTurn[10][3] = true; leftUTurn[10][4] = true;
+        // Downward arrowhead for U-turn at y=11..13
+        for (int x = 1; x <= 6; x++) leftUTurn[11][x] = true;
+        for (int x = 2; x <= 5; x++) leftUTurn[12][x] = true;
+        leftUTurn[13][3] = true; leftUTurn[13][4] = true;
         map.put("left_u_turn", leftUTurn);
 
         // 3. LEFT_STRAIGHT_RIGHT (左转 + 直行 + 右转)
@@ -101,31 +104,35 @@ public class IconTextureGenerator {
         lsr[12][12] = true;
         map.put("left_straight_right", lsr);
 
-        // 4. RIGHT_AND_U_TURN (右转 + 掉头)
+        // 4. RIGHT_AND_U_TURN (右转 + 掉头: 右转在上方，掉头在下方)
         boolean[][] rightUTurn = new boolean[16][16];
-        for (int y = 5; y <= 13; y++) {
+        // Trunk on the left (x=5..6)
+        for (int y = 2; y <= 14; y++) {
+            rightUTurn[y][5] = true;
             rightUTurn[y][6] = true;
-            rightUTurn[y][7] = true;
         }
-        rightUTurn[4][5] = true; rightUTurn[4][6] = true;
-        rightUTurn[3][3] = true; rightUTurn[3][4] = true; rightUTurn[3][5] = true;
-        rightUTurn[4][2] = true; rightUTurn[4][3] = true;
-        rightUTurn[5][1] = true; rightUTurn[5][2] = true;
-        // U-turn arrowhead pointing down at x=1..2
-        for (int x = 0; x <= 4; x++) rightUTurn[6][x] = true;
-        for (int x = 1; x <= 3; x++) rightUTurn[7][x] = true;
-        rightUTurn[8][1] = true; rightUTurn[8][2] = true;
-        // Right-turn branch at y=10..11
+        // Top part: Right Turn (→) at y=3..4
         for (int x = 7; x <= 12; x++) {
-            rightUTurn[10][x] = true;
-            rightUTurn[11][x] = true;
+            rightUTurn[3][x] = true;
+            rightUTurn[4][x] = true;
         }
-        rightUTurn[8][12] = true;
-        rightUTurn[9][12] = true; rightUTurn[9][13] = true;
-        rightUTurn[10][12] = true; rightUTurn[10][13] = true; rightUTurn[10][14] = true;
-        rightUTurn[11][12] = true; rightUTurn[11][13] = true; rightUTurn[11][14] = true;
-        rightUTurn[12][12] = true; rightUTurn[12][13] = true;
-        rightUTurn[13][12] = true;
+        rightUTurn[1][11] = true;
+        rightUTurn[2][11] = true; rightUTurn[2][12] = true;
+        rightUTurn[3][13] = true; rightUTurn[3][14] = true;
+        rightUTurn[4][13] = true; rightUTurn[4][14] = true;
+        rightUTurn[5][11] = true; rightUTurn[5][12] = true;
+        rightUTurn[6][11] = true;
+
+        // Bottom part: U-Turn (↓) branching off trunk at y=7..8
+        for (int x = 1; x <= 4; x++) rightUTurn[7][x] = true;
+        rightUTurn[8][1] = true; rightUTurn[8][2] = true;
+        rightUTurn[8][4] = true;
+        rightUTurn[9][1] = true; rightUTurn[9][2] = true;
+        rightUTurn[10][1] = true; rightUTurn[10][2] = true;
+        // Downward arrowhead for U-turn at y=11..13
+        for (int x = 0; x <= 4; x++) rightUTurn[11][x] = true;
+        for (int x = 1; x <= 3; x++) rightUTurn[12][x] = true;
+        rightUTurn[13][1] = true; rightUTurn[13][2] = true;
         map.put("right_u_turn", rightUTurn);
 
         // 5. LEFT_AND_RIGHT (左转 + 右转)
@@ -271,10 +278,13 @@ public class IconTextureGenerator {
         System.out.println("Generated " + (iconGrids.size() * 3) + " bulb textures!");
 
         // 2. Generate updated GUI icons.png
-        File sourceIconsFile = new File(baseDir, "assets/trafficcraft/textures/gui/icons.png");
+        File jarFile = new File(baseDir, "libs/trafficcraft-fabric-1.20.1-1.2.0-beta.3.jar");
         BufferedImage iconsSheet;
-        if (sourceIconsFile.exists()) {
-            iconsSheet = ImageIO.read(sourceIconsFile);
+        if (jarFile.exists()) {
+            try (java.util.jar.JarFile jar = new java.util.jar.JarFile(jarFile)) {
+                java.util.zip.ZipEntry entry = jar.getEntry("assets/trafficcraft/textures/gui/icons.png");
+                iconsSheet = ImageIO.read(jar.getInputStream(entry));
+            }
         } else {
             iconsSheet = new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB);
         }

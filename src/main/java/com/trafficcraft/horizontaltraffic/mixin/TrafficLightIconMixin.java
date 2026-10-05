@@ -24,9 +24,37 @@ public class TrafficLightIconMixin {
     @Mutable
     private static TrafficLightIcon[] $VALUES;
 
+    @Shadow
+    public int getUMultiplier() {
+        throw new AssertionError();
+    }
+
+    @Shadow
+    public int getVMultiplier() {
+        throw new AssertionError();
+    }
+
+    private static final de.mrjulsen.mcdragonlib.client.util.DLTexture HT_ICON_TEXTURE =
+            new de.mrjulsen.mcdragonlib.client.util.DLTexture(
+                    new net.minecraft.resources.ResourceLocation("horizontal_traffic", "textures/gui/icons.png"), 256, 256
+            );
+
     @Invoker("<init>")
     public static TrafficLightIcon createTrafficLightIcon(String internalName, int internalId, String name, int index, int u, int v, TrafficLightType[] allowedInTypes, TrafficLightColor[] applicableToColors) {
         throw new AssertionError();
+    }
+
+    @Inject(method = "getSprite", at = @At("HEAD"), cancellable = true, remap = false)
+    public void onGetSprite(TrafficLightType type, org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable<de.mrjulsen.mcdragonlib.client.util.DLSprite> cir) {
+        cir.setReturnValue(new de.mrjulsen.mcdragonlib.client.util.DLSprite(
+                HT_ICON_TEXTURE,
+                16,
+                16,
+                16 * getUMultiplier(),
+                16 * (getVMultiplier() + type.getIndex()),
+                16,
+                16
+        ));
     }
 
     @Inject(method = "<clinit>", at = @At("TAIL"), remap = false)
