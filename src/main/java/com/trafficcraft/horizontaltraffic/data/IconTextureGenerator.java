@@ -163,14 +163,14 @@ public class IconTextureGenerator {
         }
         map.put("left_right", lr);
 
-        // 6. SLANTED_LEFT (斜向左转 ↖) - Matching user hand-drawn sketch, bold 2px lines
+        // 6. SLANTED_LEFT (斜向左转 ↖) - Matching user hand-drawn sketch, large bold 9px arrowhead
         boolean[][] sLeft = new boolean[16][16];
-        // Top horizontal barb (2px thick)
+        // Top horizontal barb (2px thick, 9px long)
         for (int y = 1; y <= 2; y++) {
-            for (int x = 1; x <= 6; x++) sLeft[y][x] = true;
+            for (int x = 1; x <= 9; x++) sLeft[y][x] = true;
         }
-        // Left vertical barb (2px thick)
-        for (int y = 1; y <= 6; y++) {
+        // Left vertical barb (2px thick, 9px long)
+        for (int y = 1; y <= 9; y++) {
             sLeft[y][1] = sLeft[y][2] = true;
         }
         // 2px diagonal shaft from (3,3) down to (13,13)
@@ -184,7 +184,7 @@ public class IconTextureGenerator {
         }
         map.put("slanted_left", sLeft);
 
-        // 7. SLANTED_RIGHT (斜向右转 ↗) - Horizontal mirror of SLANTED_LEFT
+        // 7. SLANTED_RIGHT (斜向右转 ↗) - Horizontal mirror of SLANTED_LEFT (large bold 9px arrowhead)
         boolean[][] sRight = new boolean[16][16];
         for (int y = 0; y < 16; y++) {
             for (int x = 0; x < 16; x++) {
