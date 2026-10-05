@@ -68,40 +68,42 @@ public class IconTextureGenerator {
         map.put("left_u_turn", leftUTurn);
 
         // 3. LEFT_STRAIGHT_RIGHT (左转 + 直行 + 右转)
+        // Distinct, separated arrows: straight arrow on top (y=1..5), 2 empty rows at y=6..7, side branches at y=8..13
         boolean[][] lsr = new boolean[16][16];
-        for (int y = 6; y <= 14; y++) {
+        for (int y = 5; y <= 14; y++) {
             lsr[y][7] = true;
             lsr[y][8] = true;
         }
-        // Straight open chevron at top
+        // Straight open chevron at top (stops cleanly at y=5)
         lsr[1][7] = true; lsr[1][8] = true;
         for (int x = 6; x <= 9; x++) lsr[2][x] = true;
         for (int x = 5; x <= 10; x++) lsr[3][x] = true;
         for (int x = 4; x <= 6; x++) lsr[4][x] = true;
         for (int x = 9; x <= 11; x++) lsr[4][x] = true;
-        for (int x = 3; x <= 5; x++) lsr[5][x] = true;
-        for (int x = 10; x <= 12; x++) lsr[5][x] = true;
-        // Crossbar
+        for (int x = 4; x <= 5; x++) lsr[5][x] = true;
+        for (int x = 10; x <= 11; x++) lsr[5][x] = true;
+
+        // Rows 6 & 7 are ONLY trunk (2 full rows of empty space separating top head from side wings)
+
+        // Side horizontal crossbar at y=10..11
         for (int x = 2; x <= 13; x++) {
-            lsr[9][x] = true;
             lsr[10][x] = true;
+            lsr[11][x] = true;
         }
-        // Left chevron
-        int[][] leftWings = {
-                {6, 3, 4}, {7, 2, 4}, {8, 1, 3}, {9, 0, 2},
-                {10, 0, 2}, {11, 1, 3}, {12, 2, 4}, {13, 3, 4}
-        };
-        for (int[] w : leftWings) {
-            for (int x = w[1]; x <= w[2]; x++) lsr[w[0]][x] = true;
-        }
-        // Right chevron
-        int[][] rightWings = {
-                {6, 11, 12}, {7, 11, 13}, {8, 12, 14}, {9, 13, 15},
-                {10, 13, 15}, {11, 12, 14}, {12, 11, 13}, {13, 11, 12}
-        };
-        for (int[] w : rightWings) {
-            for (int x = w[1]; x <= w[2]; x++) lsr[w[0]][x] = true;
-        }
+        // Left chevron (y=8..13)
+        for (int x = 3; x <= 4; x++) lsr[8][x] = true;
+        for (int x = 2; x <= 4; x++) lsr[9][x] = true;
+        for (int x = 1; x <= 3; x++) { lsr[10][x] = true; lsr[11][x] = true; }
+        for (int x = 2; x <= 4; x++) lsr[12][x] = true;
+        for (int x = 3; x <= 4; x++) lsr[13][x] = true;
+
+        // Right chevron (y=8..13)
+        for (int x = 11; x <= 12; x++) lsr[8][x] = true;
+        for (int x = 11; x <= 13; x++) lsr[9][x] = true;
+        for (int x = 12; x <= 14; x++) { lsr[10][x] = true; lsr[11][x] = true; }
+        for (int x = 11; x <= 13; x++) lsr[12][x] = true;
+        for (int x = 11; x <= 12; x++) lsr[13][x] = true;
+
         map.put("left_straight_right", lsr);
 
         // 4. RIGHT_AND_U_TURN (右转 + 掉头: 右转在上方，掉头在下方)
@@ -170,11 +172,11 @@ public class IconTextureGenerator {
             sLeft[y][x] = true;
             sLeft[y][x - 1] = true;
         }
-        for (int x = 2; x <= 8; x++) sLeft[1][x] = true;
-        for (int x = 1; x <= 8; x++) sLeft[2][x] = true;
-        for (int y = 2; y <= 8; y++) sLeft[y][1] = true;
-        for (int y = 1; y <= 8; y++) sLeft[y][2] = true;
-        sLeft[3][3] = true; sLeft[3][4] = true; sLeft[4][3] = true;
+        sLeft[1][2] = sLeft[1][3] = sLeft[1][4] = true;
+        for (int x = 1; x <= 4; x++) sLeft[2][x] = true;
+        for (int x = 1; x <= 3; x++) sLeft[3][x] = true;
+        for (int x = 0; x <= 2; x++) sLeft[4][x] = true;
+        sLeft[5][1] = sLeft[5][2] = true;
         map.put("slanted_left", sLeft);
 
         // 7. SLANTED_RIGHT (斜向右转 ↗) - Horizontal mirror of SLANTED_LEFT
@@ -187,38 +189,34 @@ public class IconTextureGenerator {
         map.put("slanted_right", sRight);
 
         // 8. SLANTED_LEFT_AND_RIGHT (双向斜箭头 ↖ ↗)
+        // Two distinct diverging 45° arrows pointing to upper-left and upper-right corners with central trunk
         boolean[][] slr = new boolean[16][16];
         for (int y = 10; y <= 14; y++) {
             slr[y][7] = true;
             slr[y][8] = true;
         }
-        // Left slanted branch to ↖
-        for (int i = 0; i <= 4; i++) {
+        // Left diagonal stem from (7,10) to (2,5)
+        for (int i = 0; i <= 6; i++) {
             int x = 7 - i;
             int y = 10 - i;
-            slr[y][x] = true;
-            slr[y][x - 1] = true;
+            if (x >= 0 && x < 16 && y >= 0 && y < 16) {
+                slr[y][x] = true;
+                if (x - 1 >= 0) slr[y][x - 1] = true;
+            }
         }
-        for (int x = 2; x <= 6; x++) slr[1][x] = true;
-        for (int x = 1; x <= 6; x++) slr[2][x] = true;
-        for (int y = 2; y <= 6; y++) slr[y][1] = true;
-        for (int y = 1; y <= 6; y++) slr[y][2] = true;
-        slr[3][3] = true; slr[4][3] = true; slr[3][4] = true;
-        slr[5][3] = true; slr[5][4] = true;
+        // Left arrowhead pointing outward to ↖
+        slr[1][2] = slr[1][3] = slr[1][4] = true;
+        for (int x = 1; x <= 4; x++) slr[2][x] = true;
+        for (int x = 1; x <= 3; x++) slr[3][x] = true;
+        for (int x = 0; x <= 2; x++) slr[4][x] = true;
+        slr[5][1] = slr[5][2] = true;
 
-        // Right slanted branch to ↗
-        for (int i = 0; i <= 4; i++) {
-            int x = 8 + i;
-            int y = 10 - i;
-            slr[y][x] = true;
-            slr[y][x + 1] = true;
+        // Right side is exact symmetrical mirror (branching to ↗)
+        for (int y = 0; y < 16; y++) {
+            for (int x = 0; x < 8; x++) {
+                slr[y][15 - x] = slr[y][x];
+            }
         }
-        for (int x = 9; x <= 13; x++) slr[1][x] = true;
-        for (int x = 9; x <= 14; x++) slr[2][x] = true;
-        for (int y = 2; y <= 6; y++) slr[y][14] = true;
-        for (int y = 1; y <= 6; y++) slr[y][13] = true;
-        slr[3][12] = true; slr[4][12] = true; slr[3][11] = true;
-        slr[5][12] = true; slr[5][11] = true;
 
         map.put("slanted_left_right", slr);
 
