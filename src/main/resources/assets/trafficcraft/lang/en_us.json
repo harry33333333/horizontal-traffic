@@ -1,12 +1,4 @@
 {
-  "itemGroup.horizontal_traffic.tab": "Horizontal Traffic",
-  "block.horizontal_traffic.horizontal_traffic_light": "Horizontal Traffic Light (3 Lights)",
-  "block.horizontal_traffic.horizontal_double_traffic_light": "Horizontal Double Traffic Light (2 Lights)",
-  "block.horizontal_traffic.horizontal_single_traffic_light": "Horizontal Single Traffic Light (1 Light)",
-  "message.horizontal_traffic.position_changed": "Traffic light position set to: %s",
-  "gui.horizontal_traffic.position.top": "Top",
-  "gui.horizontal_traffic.position.center": "Center",
-  "gui.horizontal_traffic.position.bottom": "Bottom",
   "enum.trafficcraft.trafficlighticon.u_turn": "U-Turn",
   "enum.trafficcraft.trafficlighticon.left_u_turn": "Left & U-Turn",
   "enum.trafficcraft.trafficlighticon.left_straight_right": "Left, Straight & Right",

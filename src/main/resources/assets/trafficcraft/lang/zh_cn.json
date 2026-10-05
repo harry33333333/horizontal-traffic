@@ -1,12 +1,4 @@
 {
-  "itemGroup.horizontal_traffic.tab": "横向红绿灯 (Horizontal Traffic)",
-  "block.horizontal_traffic.horizontal_traffic_light": "横向三联红绿灯",
-  "block.horizontal_traffic.horizontal_double_traffic_light": "横向双联红绿灯",
-  "block.horizontal_traffic.horizontal_single_traffic_light": "横向单联红绿灯",
-  "message.horizontal_traffic.position_changed": "红绿灯位置调整为：%s",
-  "gui.horizontal_traffic.position.top": "顶部",
-  "gui.horizontal_traffic.position.center": "居中",
-  "gui.horizontal_traffic.position.bottom": "底部",
   "enum.trafficcraft.trafficlighticon.u_turn": "掉头",
   "enum.trafficcraft.trafficlighticon.left_u_turn": "左转 + 掉头",
   "enum.trafficcraft.trafficlighticon.left_straight_right": "左转 + 直行 + 右转",
