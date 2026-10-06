@@ -39,7 +39,7 @@ public class HorizontalTrafficLightBlockEntityRenderer extends RotatableBlockEnt
         // From left to right: Red (slot 0), Yellow (slot 1), Green (slot 2)
         float[] bulbXOffsets;
         if (lightCount == 3) {
-            bulbXOffsets = new float[]{ 1.5f, 6.0f, 10.5f };
+            bulbXOffsets = new float[]{ 0.5f, 6.0f, 11.5f };
         } else if (lightCount == 2) {
             bulbXOffsets = new float[]{ 3.5f, 8.5f };
         } else {
@@ -48,7 +48,7 @@ public class HorizontalTrafficLightBlockEntityRenderer extends RotatableBlockEnt
 
         for (int i = 0; i < be.getColorSlotCount() && i < lightCount && i < bulbXOffsets.length; i++) {
             graphics.poseStack().pushPose();
-            graphics.poseStack().translate(bulbXOffsets[i], bulbY, 13.0f);
+            graphics.poseStack().translate(bulbXOffsets[i], bulbY, 7.0f);
 
             TrafficLightColor slotColor = be.getColorOfSlot(i);
             if (slotColor != null && be.isColorEnabled(slotColor, true)) {

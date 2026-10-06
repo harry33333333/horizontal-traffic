@@ -58,7 +58,7 @@ public class HorizontalTrafficLightBlock extends TrafficLightBlock {
     private final TrafficLightModel defaultModel;
 
     static {
-        VoxelShape horizontalPole = Block.box(0.0, 7.0, 7.0, 16.0, 9.0, 9.0);
+        VoxelShape supportPole = Block.box(7.0, 7.0, 13.0, 9.0, 9.0, 16.0);
 
         for (TrafficLightModel model : TrafficLightModel.values()) {
             Map<HorizontalLightPosition, Map<Direction, VoxelShape>> posMap = new EnumMap<>(HorizontalLightPosition.class);
@@ -70,23 +70,23 @@ public class HorizontalTrafficLightBlock extends TrafficLightBlock {
 
                 VoxelShape body;
                 if (model == TrafficLightModel.THREE_LIGHTS) {
-                    body = Block.box(0.5, minY, 0.5, 15.5, maxY, 5.0);
+                    body = Block.box(0.0, minY, 6.5, 16.0, maxY, 11.0);
                 } else if (model == TrafficLightModel.TWO_LIGHTS) {
-                    body = Block.box(3.0, minY, 0.5, 13.0, maxY, 5.0);
+                    body = Block.box(3.0, minY, 6.5, 13.0, maxY, 11.0);
                 } else {
-                    body = Block.box(4.0, minY, 0.5, 12.0, maxY, 5.0);
+                    body = Block.box(4.0, minY, 6.5, 12.0, maxY, 11.0);
                 }
 
                 VoxelShape bracket;
                 if (pos == HorizontalLightPosition.BOTTOM) {
-                    bracket = Block.box(6.0, 6.0, 5.0, 10.0, 9.0, 7.0);
+                    bracket = Block.box(6.0, 6.0, 11.0, 10.0, 9.0, 13.0);
                 } else if (pos == HorizontalLightPosition.TOP) {
-                    bracket = Block.box(6.0, 7.0, 5.0, 10.0, 10.0, 7.0);
+                    bracket = Block.box(6.0, 7.0, 11.0, 10.0, 10.0, 13.0);
                 } else {
-                    bracket = Block.box(6.0, 7.0, 5.0, 10.0, 9.0, 7.0);
+                    bracket = Block.box(6.0, 7.0, 11.0, 10.0, 9.0, 13.0);
                 }
 
-                VoxelShape baseNorthShape = Shapes.or(horizontalPole, body, bracket);
+                VoxelShape baseNorthShape = Shapes.or(supportPole, body, bracket);
 
                 for (Direction dir : Direction.Plane.HORIZONTAL) {
                     VoxelShape rotated = rotateShape(dir, baseNorthShape);
@@ -142,7 +142,7 @@ public class HorizontalTrafficLightBlock extends TrafficLightBlock {
                 }
             }
         }
-        return rotateShape(facing, Block.box(0.0, 7.0, 7.0, 16.0, 9.0, 9.0));
+        return rotateShape(facing, Block.box(7.0, 7.0, 13.0, 9.0, 9.0, 16.0));
     }
 
     @Override
