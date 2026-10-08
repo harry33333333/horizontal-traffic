@@ -3,6 +3,8 @@
   "package": "com.trafficcraft.horizontaltraffic.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "TrafficLightBlockEntityMixin",
+    "TrafficLightControllerBlockEntityMixin",
     "TrafficLightIconMixin",
     "TrafficLightLinkerItemMixin",
     "TrafficLightPacketAccessor",
@@ -10,6 +12,7 @@
   ],
   "client": [
     "DLNumberPickerAccessor",
+    "TrafficLightConfigMixin",
     "TrafficLightConfigScreenMixin",
     "TrafficLightControlSettingsMixin",
     "TrafficLightGeneralSettingsMixin"

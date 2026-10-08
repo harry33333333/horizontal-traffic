@@ -26,8 +26,13 @@ public abstract class TrafficLightConfigScreenMixin extends DLWindow {
         super(null);
     }
 
+    public static boolean lastConfigGreenFlash = true;
+
     @Inject(method = "close", at = @At("HEAD"), remap = false)
     private void onClose(CallbackInfo ci) {
+        if (config instanceof com.trafficcraft.horizontaltraffic.util.IGreenFlashConfigurable flashConfig) {
+            lastConfigGreenFlash = flashConfig.isGreenFlashEnabled();
+        }
         try {
             List<DLNumberPicker> pickers = new ArrayList<>();
             findPickers(this, pickers);
@@ -69,6 +74,10 @@ public abstract class TrafficLightConfigScreenMixin extends DLWindow {
                 blockEntity.setColorSlots(config.colors);
                 blockEntity.enableOnlyColors(config.enabledColors);
                 blockEntity.setType(config.type);
+                if (config instanceof com.trafficcraft.horizontaltraffic.util.IGreenFlashConfigurable flashConfig
+                        && blockEntity instanceof com.trafficcraft.horizontaltraffic.util.IGreenFlashConfigurable flashBe) {
+                    flashBe.setGreenFlashEnabled(flashConfig.isGreenFlashEnabled());
+                }
             }
         }
     }

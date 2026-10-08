@@ -35,6 +35,18 @@ public abstract class TrafficLightControlSettingsMixin extends DLGuiComponent {
             syncPhaseIdFromComponents();
             return false;
         });
+
+        de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLCheckBox checkBox =
+                new de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLCheckBox(0, 0, 150, 14);
+        checkBox.text.set(net.minecraft.network.chat.Component.translatable("gui.horizontal_traffic.green_flash"));
+        if (config instanceof com.trafficcraft.horizontaltraffic.util.IGreenFlashConfigurable flashConfig) {
+            checkBox.checked.set(flashConfig.isGreenFlashEnabled());
+            checkBox.addEventListener(de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLToggleButton.CheckedChangedEvent.class, (comp, evt) -> {
+                flashConfig.setGreenFlashEnabled(evt.checked());
+                return false;
+            });
+        }
+        this.addComponent(checkBox);
     }
 
     @Inject(method = "initRemoteSettings", at = @At("TAIL"), remap = false)

@@ -22,5 +22,6 @@
   "gui.trafficcraft.trafficlighticon.left_right": "Left & Right",
   "gui.trafficcraft.trafficlighticon.slanted_left": "Slanted Left (↖)",
   "gui.trafficcraft.trafficlighticon.slanted_right": "Slanted Right (↗)",
-  "gui.trafficcraft.trafficlighticon.slanted_left_right": "Slanted Left & Right (↖ ↗)"
+  "gui.trafficcraft.trafficlighticon.slanted_left_right": "Slanted Left & Right (↖ ↗)",
+  "gui.horizontal_traffic.green_flash": "Green Light Flashing"
 }

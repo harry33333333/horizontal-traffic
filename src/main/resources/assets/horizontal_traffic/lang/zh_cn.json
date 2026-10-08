@@ -22,5 +22,6 @@
   "gui.trafficcraft.trafficlighticon.left_right": "左转 + 右转",
   "gui.trafficcraft.trafficlighticon.slanted_left": "斜向左转 (↖)",
   "gui.trafficcraft.trafficlighticon.slanted_right": "斜向右转 (↗)",
-  "gui.trafficcraft.trafficlighticon.slanted_left_right": "双向斜箭头 (↖ ↗)"
+  "gui.trafficcraft.trafficlighticon.slanted_left_right": "双向斜箭头 (↖ ↗)",
+  "gui.horizontal_traffic.green_flash": "绿灯末尾闪烁"
 }

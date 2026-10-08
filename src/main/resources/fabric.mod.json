@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "horizontal_traffic",
-  "version": "1.0.0",
+  "version": "${version}",
   "name": "Horizontal Traffic",
   "description": "TrafficCraft addon adding customizable horizontal traffic lights.",
   "authors": [
