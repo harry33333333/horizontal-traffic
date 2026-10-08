@@ -1,9 +1,14 @@
 package com.trafficcraft.horizontaltraffic.util;
 
+import com.trafficcraft.horizontaltraffic.HorizontalTrafficMod;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.data.TrafficLightScheduleEntryData;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,10 +64,15 @@ public class GreenFlashHelper {
             return -1;
         }
 
+        int normalizedTick = currentTick % totalDuration;
+        if (normalizedTick < 0) {
+            normalizedTick += totalDuration;
+        }
+
         // Active event for currentTick
         PhaseEvent activeEvent = null;
         for (PhaseEvent ev : events) {
-            if (currentTick >= ev.cumTick) {
+            if (normalizedTick >= ev.cumTick) {
                 activeEvent = ev;
             }
         }
@@ -76,16 +86,18 @@ public class GreenFlashHelper {
 
         // Find next event without green
         for (PhaseEvent ev : events) {
-            if (ev.cumTick > currentTick) {
+            if (ev.cumTick > normalizedTick) {
                 if (!ev.hasGreen) {
-                    return ev.cumTick - currentTick;
+                    return ev.cumTick - normalizedTick;
                 }
             }
         }
 
-        for (PhaseEvent ev : events) {
-            if (!ev.hasGreen) {
-                return (totalDuration - currentTick) + ev.cumTick;
+        if (schedule.isLoop()) {
+            for (PhaseEvent ev : events) {
+                if (!ev.hasGreen) {
+                    return (totalDuration - normalizedTick) + ev.cumTick;
+                }
             }
         }
 
@@ -98,21 +110,44 @@ public class GreenFlashHelper {
         }
 
         // In the final 60 ticks (3 seconds):
-        // 60..51: ON  (half-sec 5)
-        // 50..41: OFF (half-sec 4)
-        // 40..31: ON  (half-sec 3)
-        // 30..21: OFF (half-sec 2)
-        // 20..11: ON  (half-sec 1)
-        // 10..1:  OFF (half-sec 0)
-        // At 0: naturally switches to next phase (Yellow)
+        // 60..51: OFF (0.5s)
+        // 50..41: ON  (0.5s, flash 1)
+        // 40..31: OFF (0.5s)
+        // 30..21: ON  (0.5s, flash 2)
+        // 20..11: OFF (0.5s)
+        // 10..1:  ON  (0.5s, flash 3)
+        // 0: naturally switches to Yellow!
         int halfSecIndex = (remainingTicks - 1) / 10;
-        boolean shouldBeOn = (halfSecIndex % 2 == 1);
+        boolean shouldBeOn = (halfSecIndex % 2 == 0);
 
         boolean isCurrentlyOn = light.isColorEnabled(TrafficLightColor.GREEN, true);
         if (shouldBeOn && !isCurrentlyOn) {
             light.enableColors(List.of(TrafficLightColor.GREEN));
+            syncBlockEntity(light);
+            HorizontalTrafficMod.LOGGER.info("[GreenFlash] Light at {} FLASH ON (rem={})", light.getBlockPos(), remainingTicks);
         } else if (!shouldBeOn && isCurrentlyOn) {
-            light.disableColors(List.of(TrafficLightColor.GREEN));
+            List<TrafficLightColor> toDisable = new ArrayList<>();
+            for (TrafficLightColor c : light.getEnabledColors()) {
+                if (c == TrafficLightColor.GREEN || c.isSimilar(TrafficLightColor.GREEN)) {
+                    toDisable.add(c);
+                }
+            }
+            if (!toDisable.isEmpty()) {
+                light.disableColors(toDisable);
+            } else {
+                light.disableColors(List.of(TrafficLightColor.GREEN));
+            }
+            syncBlockEntity(light);
+            HorizontalTrafficMod.LOGGER.info("[GreenFlash] Light at {} FLASH OFF (rem={})", light.getBlockPos(), remainingTicks);
+        }
+    }
+
+    public static void syncBlockEntity(TrafficLightBlockEntity light) {
+        Level level = light.getLevel();
+        if (level != null && !level.isClientSide()) {
+            BlockPos pos = light.getBlockPos();
+            BlockState state = light.getBlockState();
+            level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
         }
     }
 }

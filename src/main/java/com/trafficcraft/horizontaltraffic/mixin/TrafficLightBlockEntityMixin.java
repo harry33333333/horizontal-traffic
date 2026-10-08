@@ -2,18 +2,23 @@ package com.trafficcraft.horizontaltraffic.mixin;
 
 import com.trafficcraft.horizontaltraffic.util.GreenFlashHelper;
 import com.trafficcraft.horizontaltraffic.util.IGreenFlashConfigurable;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightControlType;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.Collection;
 
 @Mixin(TrafficLightBlockEntity.class)
 public abstract class TrafficLightBlockEntityMixin implements IGreenFlashConfigurable {
@@ -64,9 +69,34 @@ public abstract class TrafficLightBlockEntityMixin implements IGreenFlashConfigu
         if (level.isClientSide()) return;
         if (this.running && this.getControlType() == TrafficLightControlType.OWN_SCHEDULE) {
             if (this.horizontal_traffic$greenFlashEnabled && this.schedule != null) {
-                int rem = GreenFlashHelper.getRemainingGreenTicks(this.schedule, this.ticker, this.phaseId, false);
+                int currentTick = Math.max(0, this.ticker - 1);
+                int rem = GreenFlashHelper.getRemainingGreenTicks(this.schedule, currentTick, this.phaseId, false);
                 GreenFlashHelper.handleFlashing((TrafficLightBlockEntity) (Object) this, rem);
             }
+        }
+    }
+
+    @Inject(method = "enableOnlyColors", at = @At("TAIL"), remap = false)
+    private void onEnableOnlyColors(Collection<TrafficLightColor> colors, CallbackInfo ci) {
+        syncBlock();
+    }
+
+    @Inject(method = "enableColors", at = @At("TAIL"), remap = false)
+    private void onEnableColors(Collection<TrafficLightColor> colors, CallbackInfo ci) {
+        syncBlock();
+    }
+
+    @Inject(method = "disableColors", at = @At("TAIL"), remap = false)
+    private void onDisableColors(Collection<TrafficLightColor> colors, CallbackInfo ci) {
+        syncBlock();
+    }
+
+    private void syncBlock() {
+        Level level = ((BlockEntity) (Object) this).getLevel();
+        if (level != null && !level.isClientSide()) {
+            BlockPos pos = ((BlockEntity) (Object) this).getBlockPos();
+            BlockState state = ((BlockEntity) (Object) this).getBlockState();
+            level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
         }
     }
 }

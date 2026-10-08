@@ -42,16 +42,19 @@ public abstract class TrafficLightControllerBlockEntityMixin {
         TrafficLightSchedule schedule = this.getFirstOrMainSchedule();
         if (schedule == null) return;
 
+        int currentTick = Math.max(0, this.ticks - 1);
         for (WorldLocation loc : this.trafficLightLocations) {
-            if (loc != null && loc.dimension != null && loc.dimension.equals(level.dimension().location())) {
-                BlockPos lightPos = loc.getLocationBlockPos();
-                if (level.isLoaded(lightPos)) {
-                    BlockEntity be = level.getBlockEntity(lightPos);
-                    if (be instanceof TrafficLightBlockEntity light && ((IGreenFlashConfigurable) light).isGreenFlashEnabled()) {
-                        if (light.getControlType() == TrafficLightControlType.REMOTE) {
-                            int rem = GreenFlashHelper.getRemainingGreenTicks(schedule, this.ticks, light.getPhaseId(), true);
-                            GreenFlashHelper.handleFlashing(light, rem);
-                        }
+            if (loc == null) continue;
+            if (loc.dimension != null && !loc.dimension.equals(level.dimension().location())) {
+                continue;
+            }
+            BlockPos lightPos = loc.getLocationBlockPos();
+            if (lightPos != null && level.isLoaded(lightPos)) {
+                BlockEntity be = level.getBlockEntity(lightPos);
+                if (be instanceof TrafficLightBlockEntity light && ((IGreenFlashConfigurable) light).isGreenFlashEnabled()) {
+                    if (light.getControlType() == TrafficLightControlType.REMOTE) {
+                        int rem = GreenFlashHelper.getRemainingGreenTicks(schedule, currentTick, light.getPhaseId(), true);
+                        GreenFlashHelper.handleFlashing(light, rem);
                     }
                 }
             }
