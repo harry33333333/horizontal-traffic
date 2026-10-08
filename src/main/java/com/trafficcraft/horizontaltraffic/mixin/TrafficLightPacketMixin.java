@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class TrafficLightPacketMixin implements IGreenFlashConfigurable {
 
     private boolean horizontal_traffic$greenFlashEnabled = true;
+    private boolean horizontal_traffic$yellowFlashingEnabled = false;
 
     @Override
     public boolean isGreenFlashEnabled() {
@@ -30,14 +31,26 @@ public class TrafficLightPacketMixin implements IGreenFlashConfigurable {
         this.horizontal_traffic$greenFlashEnabled = enabled;
     }
 
+    @Override
+    public boolean isYellowFlashingEnabled() {
+        return this.horizontal_traffic$yellowFlashingEnabled;
+    }
+
+    @Override
+    public void setYellowFlashingEnabled(boolean enabled) {
+        this.horizontal_traffic$yellowFlashingEnabled = enabled;
+    }
+
     @Inject(method = "<init>(Lnet/minecraft/core/BlockPos;Ljava/util/Collection;Lde/mrjulsen/trafficcraft/block/data/TrafficLightType;Lde/mrjulsen/trafficcraft/block/data/TrafficLightModel;Lde/mrjulsen/trafficcraft/block/data/TrafficLightIcon;Lde/mrjulsen/trafficcraft/block/data/TrafficLightControlType;[Lde/mrjulsen/trafficcraft/block/data/TrafficLightColor;IZ)V", at = @At("TAIL"))
     private void onInit(CallbackInfo ci) {
         this.horizontal_traffic$greenFlashEnabled = com.trafficcraft.horizontaltraffic.util.GreenFlashHelper.lastConfigGreenFlash;
+        this.horizontal_traffic$yellowFlashingEnabled = com.trafficcraft.horizontaltraffic.util.GreenFlashHelper.lastConfigYellowFlash;
     }
 
     @Inject(method = "write", at = @At("TAIL"))
     private void onWrite(CompoundTag tag, CallbackInfo ci) {
         tag.putBoolean("HT_GreenFlash", this.horizontal_traffic$greenFlashEnabled);
+        tag.putBoolean("HT_YellowFlash", this.horizontal_traffic$yellowFlashingEnabled);
     }
 
     @Inject(method = "read", at = @At("TAIL"))
@@ -46,6 +59,11 @@ public class TrafficLightPacketMixin implements IGreenFlashConfigurable {
             this.horizontal_traffic$greenFlashEnabled = tag.getBoolean("HT_GreenFlash");
         } else {
             this.horizontal_traffic$greenFlashEnabled = true;
+        }
+        if (tag.contains("HT_YellowFlash")) {
+            this.horizontal_traffic$yellowFlashingEnabled = tag.getBoolean("HT_YellowFlash");
+        } else {
+            this.horizontal_traffic$yellowFlashingEnabled = false;
         }
     }
 
@@ -59,6 +77,7 @@ public class TrafficLightPacketMixin implements IGreenFlashConfigurable {
                 BlockEntity be = level.getBlockEntity(pos);
                 if (be instanceof IGreenFlashConfigurable flashBe && packet instanceof IGreenFlashConfigurable flashPacket) {
                     flashBe.setGreenFlashEnabled(flashPacket.isGreenFlashEnabled());
+                    flashBe.setYellowFlashingEnabled(flashPacket.isYellowFlashingEnabled());
                     be.setChanged();
                 }
 

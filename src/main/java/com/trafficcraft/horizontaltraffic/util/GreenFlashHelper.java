@@ -16,6 +16,8 @@ import java.util.List;
 public class GreenFlashHelper {
 
     public static boolean lastConfigGreenFlash = true;
+    public static boolean lastConfigYellowFlash = false;
+    public static boolean isApplyingYellowFlash = false;
 
     public static int getRemainingGreenTicks(TrafficLightSchedule schedule, int currentTick, int targetPhase, boolean isRemote) {
         if (schedule == null || schedule.getEntries() == null || schedule.getEntries().isEmpty()) {
@@ -139,6 +141,42 @@ public class GreenFlashHelper {
             }
             syncBlockEntity(light);
             HorizontalTrafficMod.LOGGER.info("[GreenFlash] Light at {} FLASH OFF (rem={})", light.getBlockPos(), remainingTicks);
+        }
+    }
+
+    public static void handleYellowFlashing(TrafficLightBlockEntity light, Level level) {
+        if (light == null || level == null || level.isClientSide()) {
+            return;
+        }
+
+        // 1s flash cycle (20 ticks): 0..9 (10 ticks / 0.5s) ON, 10..19 (10 ticks / 0.5s) OFF
+        long gameTime = level.getGameTime();
+        boolean shouldBeOn = (gameTime % 20) < 10;
+
+        boolean isYellowOn = light.isColorEnabled(TrafficLightColor.YELLOW, true);
+        boolean hasNonYellow = false;
+        for (TrafficLightColor c : light.getEnabledColors()) {
+            if (c != TrafficLightColor.YELLOW && !c.isSimilar(TrafficLightColor.YELLOW)) {
+                hasNonYellow = true;
+                break;
+            }
+        }
+
+        try {
+            isApplyingYellowFlash = true;
+            if (shouldBeOn) {
+                if (!isYellowOn || hasNonYellow) {
+                    light.enableOnlyColors(List.of(TrafficLightColor.YELLOW));
+                    syncBlockEntity(light);
+                }
+            } else {
+                if (isYellowOn || hasNonYellow) {
+                    light.enableOnlyColors(List.of());
+                    syncBlockEntity(light);
+                }
+            }
+        } finally {
+            isApplyingYellowFlash = false;
         }
     }
 

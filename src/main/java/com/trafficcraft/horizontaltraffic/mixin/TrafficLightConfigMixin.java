@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class TrafficLightConfigMixin implements IGreenFlashConfigurable {
 
     private boolean horizontal_traffic$greenFlashEnabled = true;
+    private boolean horizontal_traffic$yellowFlashingEnabled = false;
 
     @Override
     public boolean isGreenFlashEnabled() {
@@ -25,15 +26,27 @@ public abstract class TrafficLightConfigMixin implements IGreenFlashConfigurable
         this.horizontal_traffic$greenFlashEnabled = enabled;
     }
 
+    @Override
+    public boolean isYellowFlashingEnabled() {
+        return this.horizontal_traffic$yellowFlashingEnabled;
+    }
+
+    @Override
+    public void setYellowFlashingEnabled(boolean enabled) {
+        this.horizontal_traffic$yellowFlashingEnabled = enabled;
+    }
+
     @Inject(method = "<init>(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V", at = @At("TAIL"))
     private void onInit(Level level, BlockPos blockPos, CallbackInfo ci) {
         if (level != null && blockPos != null) {
             BlockEntity be = level.getBlockEntity(blockPos);
             if (be instanceof IGreenFlashConfigurable flashConfig) {
                 this.horizontal_traffic$greenFlashEnabled = flashConfig.isGreenFlashEnabled();
+                this.horizontal_traffic$yellowFlashingEnabled = flashConfig.isYellowFlashingEnabled();
                 return;
             }
         }
         this.horizontal_traffic$greenFlashEnabled = true;
+        this.horizontal_traffic$yellowFlashingEnabled = false;
     }
 }
