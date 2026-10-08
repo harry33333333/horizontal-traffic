@@ -276,6 +276,7 @@
     "gui.trafficcraft.trafficlight.set_enabled_colors": "启用的信号灯色",
     "gui.trafficcraft.trafficlight.set_phase_id": "信号灯相位 ID",
     "gui.trafficcraft.trafficlight.set_phase_id.description": "相位 ID 用于对多组信号灯进行分类编组。在控制器中可按该 ID 统筹联动控制。",
+    "gui.horizontal_traffic.green_flash": "绿灯末尾闪烁",
     "gui.trafficcraft.trafficlight.help.traffic_light": "了解更多关于交通信号灯",
     "gui.trafficcraft.trafficlight.helpdesc.traffic_light": "如果您想了解信号灯的工作原理及如何正确配置使用，可以参考相关百科资料。",
     "gui.trafficcraft.trafficlight.help.traffic_light_tram": "了解有轨电车信号灯",

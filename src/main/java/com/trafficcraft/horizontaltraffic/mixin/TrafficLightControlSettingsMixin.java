@@ -35,6 +35,41 @@ public abstract class TrafficLightControlSettingsMixin extends DLGuiComponent {
             syncPhaseIdFromComponents();
             return false;
         });
+
+        de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLPanel bottomPanel =
+                new de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLPanel(0, 0, this.width(), 16);
+        de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout flowLayout =
+                new de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout();
+        flowLayout.flowDirection.set(de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout.Direction.HORIZONTAL);
+        flowLayout.padding.set(new de.mrjulsen.mcdragonlib.client.gui.widgets.richtext.Padding(0, 0, 0, 0));
+        flowLayout.wrap.set(false);
+        bottomPanel.layout.set(flowLayout);
+
+        de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLCheckBox greenBox =
+                new de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLCheckBox(0, 0, 95, 14);
+        greenBox.text.set(net.minecraft.network.chat.Component.translatable("gui.horizontal_traffic.green_flash"));
+        if (config instanceof com.trafficcraft.horizontaltraffic.util.IGreenFlashConfigurable flashConfig) {
+            greenBox.checked.set(flashConfig.isGreenFlashEnabled());
+            greenBox.addEventListener(de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLToggleButton.CheckedChangedEvent.class, (comp, evt) -> {
+                flashConfig.setGreenFlashEnabled(evt.checked());
+                return false;
+            });
+        }
+        bottomPanel.addComponent(greenBox);
+
+        de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLCheckBox yellowBox =
+                new de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLCheckBox(0, 0, 95, 14);
+        yellowBox.text.set(net.minecraft.network.chat.Component.translatable("gui.horizontal_traffic.yellow_flash"));
+        if (config instanceof com.trafficcraft.horizontaltraffic.util.IGreenFlashConfigurable flashConfig) {
+            yellowBox.checked.set(flashConfig.isYellowFlashingEnabled());
+            yellowBox.addEventListener(de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLToggleButton.CheckedChangedEvent.class, (comp, evt) -> {
+                flashConfig.setYellowFlashingEnabled(evt.checked());
+                return false;
+            });
+        }
+        bottomPanel.addComponent(yellowBox);
+
+        this.addComponent(bottomPanel);
     }
 
     @Inject(method = "initRemoteSettings", at = @At("TAIL"), remap = false)
