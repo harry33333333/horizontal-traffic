@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = TrafficLightConfig.class, remap = false)
+@Mixin(TrafficLightConfig.class)
 public abstract class TrafficLightConfigMixin implements IGreenFlashConfigurable {
 
     private boolean horizontal_traffic$greenFlashEnabled = true;
@@ -25,7 +25,7 @@ public abstract class TrafficLightConfigMixin implements IGreenFlashConfigurable
         this.horizontal_traffic$greenFlashEnabled = enabled;
     }
 
-    @Inject(method = "<init>(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V", at = @At("TAIL"), remap = false)
+    @Inject(method = "<init>(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V", at = @At("TAIL"))
     private void onInit(Level level, BlockPos blockPos, CallbackInfo ci) {
         if (level != null && blockPos != null) {
             BlockEntity be = level.getBlockEntity(blockPos);

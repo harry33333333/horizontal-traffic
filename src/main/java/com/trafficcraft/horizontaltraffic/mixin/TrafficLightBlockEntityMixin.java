@@ -15,22 +15,22 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = TrafficLightBlockEntity.class, remap = false)
+@Mixin(TrafficLightBlockEntity.class)
 public abstract class TrafficLightBlockEntityMixin implements IGreenFlashConfigurable {
 
-    @Shadow
+    @Shadow(remap = false)
     private boolean running;
 
-    @Shadow
+    @Shadow(remap = false)
     private int ticker;
 
-    @Shadow
+    @Shadow(remap = false)
     private int phaseId;
 
-    @Shadow
+    @Shadow(remap = false)
     private TrafficLightSchedule schedule;
 
-    @Shadow
+    @Shadow(remap = false)
     public abstract TrafficLightControlType getControlType();
 
     private boolean horizontal_traffic$greenFlashEnabled = true;
@@ -45,7 +45,7 @@ public abstract class TrafficLightBlockEntityMixin implements IGreenFlashConfigu
         this.horizontal_traffic$greenFlashEnabled = enabled;
     }
 
-    @Inject(method = "load", at = @At("TAIL"), remap = false)
+    @Inject(method = "load", at = @At("TAIL"))
     private void onLoad(CompoundTag tag, CallbackInfo ci) {
         if (tag.contains("HT_GreenFlash")) {
             this.horizontal_traffic$greenFlashEnabled = tag.getBoolean("HT_GreenFlash");
@@ -54,12 +54,12 @@ public abstract class TrafficLightBlockEntityMixin implements IGreenFlashConfigu
         }
     }
 
-    @Inject(method = "saveAdditional", at = @At("TAIL"), remap = false)
+    @Inject(method = "saveAdditional", at = @At("TAIL"))
     private void onSaveAdditional(CompoundTag tag, CallbackInfo ci) {
         tag.putBoolean("HT_GreenFlash", this.horizontal_traffic$greenFlashEnabled);
     }
 
-    @Inject(method = "tick(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V", at = @At("TAIL"), remap = false)
+    @Inject(method = "tick(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V", at = @At("TAIL"))
     private void onTick(Level level, BlockPos pos, BlockState state, CallbackInfo ci) {
         if (level.isClientSide()) return;
         if (this.running && this.getControlType() == TrafficLightControlType.OWN_SCHEDULE) {

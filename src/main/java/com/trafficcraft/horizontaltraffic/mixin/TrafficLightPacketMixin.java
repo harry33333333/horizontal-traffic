@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = TrafficLightPacket.class, remap = false)
+@Mixin(TrafficLightPacket.class)
 public class TrafficLightPacketMixin implements IGreenFlashConfigurable {
 
     private boolean horizontal_traffic$greenFlashEnabled = true;
@@ -30,17 +30,17 @@ public class TrafficLightPacketMixin implements IGreenFlashConfigurable {
         this.horizontal_traffic$greenFlashEnabled = enabled;
     }
 
-    @Inject(method = "<init>(Lnet/minecraft/core/BlockPos;Ljava/util/Collection;Lde/mrjulsen/trafficcraft/block/data/TrafficLightType;Lde/mrjulsen/trafficcraft/block/data/TrafficLightModel;Lde/mrjulsen/trafficcraft/block/data/TrafficLightIcon;Lde/mrjulsen/trafficcraft/block/data/TrafficLightControlType;[Lde/mrjulsen/trafficcraft/block/data/TrafficLightColor;IZ)V", at = @At("TAIL"), remap = false)
+    @Inject(method = "<init>(Lnet/minecraft/core/BlockPos;Ljava/util/Collection;Lde/mrjulsen/trafficcraft/block/data/TrafficLightType;Lde/mrjulsen/trafficcraft/block/data/TrafficLightModel;Lde/mrjulsen/trafficcraft/block/data/TrafficLightIcon;Lde/mrjulsen/trafficcraft/block/data/TrafficLightControlType;[Lde/mrjulsen/trafficcraft/block/data/TrafficLightColor;IZ)V", at = @At("TAIL"))
     private void onInit(CallbackInfo ci) {
         this.horizontal_traffic$greenFlashEnabled = TrafficLightConfigScreenMixin.lastConfigGreenFlash;
     }
 
-    @Inject(method = "write", at = @At("TAIL"), remap = false)
+    @Inject(method = "write", at = @At("TAIL"))
     private void onWrite(CompoundTag tag, CallbackInfo ci) {
         tag.putBoolean("HT_GreenFlash", this.horizontal_traffic$greenFlashEnabled);
     }
 
-    @Inject(method = "read", at = @At("TAIL"), remap = false)
+    @Inject(method = "read", at = @At("TAIL"))
     private void onRead(CompoundTag tag, CallbackInfo ci) {
         if (tag.contains("HT_GreenFlash")) {
             this.horizontal_traffic$greenFlashEnabled = tag.getBoolean("HT_GreenFlash");

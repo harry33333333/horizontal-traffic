@@ -19,22 +19,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
-@Mixin(value = TrafficLightControllerBlockEntity.class, remap = false)
+@Mixin(TrafficLightControllerBlockEntity.class)
 public abstract class TrafficLightControllerBlockEntityMixin {
 
-    @Shadow
+    @Shadow(remap = false)
     private boolean running;
 
-    @Shadow
+    @Shadow(remap = false)
     private int ticks;
 
-    @Shadow
+    @Shadow(remap = false)
     private List<WorldLocation> trafficLightLocations;
 
-    @Shadow
+    @Shadow(remap = false)
     public abstract TrafficLightSchedule getFirstOrMainSchedule();
 
-    @Inject(method = "instanceTick(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V", at = @At("TAIL"), remap = false)
+    @Inject(method = "instanceTick(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V", at = @At("TAIL"))
     private void onInstanceTick(Level level, BlockPos pos, BlockState state, CallbackInfo ci) {
         if (level.isClientSide() || !this.running || this.trafficLightLocations == null) {
             return;
