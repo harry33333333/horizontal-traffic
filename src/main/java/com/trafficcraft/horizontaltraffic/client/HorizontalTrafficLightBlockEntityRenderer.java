@@ -53,7 +53,7 @@ public class HorizontalTrafficLightBlockEntityRenderer extends RotatableBlockEnt
             TrafficLightColor slotColor = be.getColorOfSlot(i);
             if (slotColor != null && be.isColorEnabled(slotColor, true)) {
                 new TrafficLightTextureManager.TrafficLightTextureKey(be.getIcon(), slotColor)
-                        .render(graphics, be, graphics.packedLight());
+                        .render(graphics, be, net.minecraft.client.renderer.LightTexture.FULL_BRIGHT);
             } else {
                 new TrafficLightTextureManager.TrafficLightTextureKey(TrafficLightIcon.NONE, TrafficLightColor.NONE)
                         .render(graphics, be, graphics.packedLight());
