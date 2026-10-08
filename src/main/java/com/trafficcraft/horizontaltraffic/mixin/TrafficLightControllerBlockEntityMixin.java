@@ -45,9 +45,6 @@ public abstract class TrafficLightControllerBlockEntityMixin {
         int currentTick = Math.max(0, this.ticks - 1);
         for (WorldLocation loc : this.trafficLightLocations) {
             if (loc == null) continue;
-            if (loc.dimension != null && !loc.dimension.equals(level.dimension().location())) {
-                continue;
-            }
             BlockPos lightPos = loc.getLocationBlockPos();
             if (lightPos != null && level.isLoaded(lightPos)) {
                 BlockEntity be = level.getBlockEntity(lightPos);
