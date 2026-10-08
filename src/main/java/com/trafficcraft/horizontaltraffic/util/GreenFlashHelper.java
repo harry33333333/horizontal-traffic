@@ -10,6 +10,8 @@ import java.util.List;
 
 public class GreenFlashHelper {
 
+    public static boolean lastConfigGreenFlash = true;
+
     public static int getRemainingGreenTicks(TrafficLightSchedule schedule, int currentTick, int targetPhase, boolean isRemote) {
         if (schedule == null || schedule.getEntries() == null || schedule.getEntries().isEmpty()) {
             return -1;

@@ -32,7 +32,7 @@ public class TrafficLightPacketMixin implements IGreenFlashConfigurable {
 
     @Inject(method = "<init>(Lnet/minecraft/core/BlockPos;Ljava/util/Collection;Lde/mrjulsen/trafficcraft/block/data/TrafficLightType;Lde/mrjulsen/trafficcraft/block/data/TrafficLightModel;Lde/mrjulsen/trafficcraft/block/data/TrafficLightIcon;Lde/mrjulsen/trafficcraft/block/data/TrafficLightControlType;[Lde/mrjulsen/trafficcraft/block/data/TrafficLightColor;IZ)V", at = @At("TAIL"))
     private void onInit(CallbackInfo ci) {
-        this.horizontal_traffic$greenFlashEnabled = TrafficLightConfigScreenMixin.lastConfigGreenFlash;
+        this.horizontal_traffic$greenFlashEnabled = com.trafficcraft.horizontaltraffic.util.GreenFlashHelper.lastConfigGreenFlash;
     }
 
     @Inject(method = "write", at = @At("TAIL"))

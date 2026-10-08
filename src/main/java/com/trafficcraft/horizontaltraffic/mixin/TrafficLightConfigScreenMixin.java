@@ -26,12 +26,10 @@ public abstract class TrafficLightConfigScreenMixin extends DLWindow {
         super(null);
     }
 
-    public static boolean lastConfigGreenFlash = true;
-
     @Inject(method = "close", at = @At("HEAD"), remap = false)
     private void onClose(CallbackInfo ci) {
         if (config instanceof com.trafficcraft.horizontaltraffic.util.IGreenFlashConfigurable flashConfig) {
-            lastConfigGreenFlash = flashConfig.isGreenFlashEnabled();
+            com.trafficcraft.horizontaltraffic.util.GreenFlashHelper.lastConfigGreenFlash = flashConfig.isGreenFlashEnabled();
         }
         try {
             List<DLNumberPicker> pickers = new ArrayList<>();
