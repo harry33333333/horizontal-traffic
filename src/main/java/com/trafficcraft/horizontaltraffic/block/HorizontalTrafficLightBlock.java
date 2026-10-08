@@ -118,9 +118,6 @@ public class HorizontalTrafficLightBlock extends TrafficLightBlock {
     public HorizontalTrafficLightBlock(TrafficLightModel defaultModel) {
         super();
         this.defaultModel = defaultModel;
-        for (BlockState state : this.stateDefinition.getPossibleStates()) {
-            ((com.trafficcraft.horizontaltraffic.mixin.BlockStateBaseAccessor) state).horizontalTraffic$setLightEmission(3);
-        }
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(FACING, Direction.NORTH)
                 .setValue(MODEL, defaultModel)
