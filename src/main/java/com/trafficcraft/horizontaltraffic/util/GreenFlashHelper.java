@@ -126,7 +126,7 @@ public class GreenFlashHelper {
         if (shouldBeOn && !isCurrentlyOn) {
             light.enableColors(List.of(TrafficLightColor.GREEN));
             syncBlockEntity(light);
-            HorizontalTrafficMod.LOGGER.info("[GreenFlash] Light at {} FLASH ON (rem={})", light.getBlockPos(), remainingTicks);
+            HorizontalTrafficMod.LOGGER.debug("[GreenFlash] Light at {} FLASH ON (rem={})", light.getBlockPos(), remainingTicks);
         } else if (!shouldBeOn && isCurrentlyOn) {
             List<TrafficLightColor> toDisable = new ArrayList<>();
             for (TrafficLightColor c : light.getEnabledColors()) {
@@ -140,7 +140,7 @@ public class GreenFlashHelper {
                 light.disableColors(List.of(TrafficLightColor.GREEN));
             }
             syncBlockEntity(light);
-            HorizontalTrafficMod.LOGGER.info("[GreenFlash] Light at {} FLASH OFF (rem={})", light.getBlockPos(), remainingTicks);
+            HorizontalTrafficMod.LOGGER.debug("[GreenFlash] Light at {} FLASH OFF (rem={})", light.getBlockPos(), remainingTicks);
         }
     }
 
