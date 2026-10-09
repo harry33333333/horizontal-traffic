@@ -7,7 +7,6 @@
     "BlockStateBaseMixin",
     "SmartPillarMixin",
     "TrafficLightBlockEntityMixin",
-    "TrafficLightBlockMixin",
     "TrafficLightControllerBlockEntityMixin",
     "TrafficLightIconMixin",
     "TrafficLightLinkerItemMixin",

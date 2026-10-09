@@ -60,32 +60,6 @@ public class HorizontalTrafficMod implements ModInitializer {
                 return net.minecraft.world.InteractionResult.PASS;
             }
 
-            // Vertical TrafficLightBlock: shift + right click with wrench rotates 45 degrees
-            if (block instanceof de.mrjulsen.trafficcraft.block.TrafficLightBlock) {
-                if (player.isShiftKeyDown()) {
-                    if (!level.isClientSide()) {
-                        net.minecraft.core.Direction facing = state.getValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING);
-                        boolean diag = state.hasProperty(com.trafficcraft.horizontaltraffic.util.Rotation45Helper.DIAGONAL)
-                                && state.getValue(com.trafficcraft.horizontaltraffic.util.Rotation45Helper.DIAGONAL);
-                        com.trafficcraft.horizontaltraffic.util.Rotation45Helper.DirectionState next =
-                                com.trafficcraft.horizontaltraffic.util.Rotation45Helper.getNextDirection(facing, diag);
-                        net.minecraft.world.level.block.state.BlockState newState = state
-                                .setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, next.facing())
-                                .setValue(com.trafficcraft.horizontaltraffic.util.Rotation45Helper.DIAGONAL, next.diagonal());
-                        level.setBlock(pos, newState, net.minecraft.world.level.block.Block.UPDATE_ALL);
-                        level.playSound(null, pos, net.minecraft.sounds.SoundEvents.ANVIL_USE, net.minecraft.sounds.SoundSource.BLOCKS, 0.4f, 1.4f);
-                        player.displayClientMessage(
-                                net.minecraft.network.chat.Component.translatable("message.horizontal_traffic.rotated_45",
-                                        com.trafficcraft.horizontaltraffic.util.Rotation45Helper.getDirectionName(next)),
-                                true
-                        );
-                        com.trafficcraft.horizontaltraffic.util.Rotation45Helper.updateDiagonalNeighbors(level, pos);
-                    }
-                    return net.minecraft.world.InteractionResult.sidedSuccess(level.isClientSide());
-                }
-                return net.minecraft.world.InteractionResult.PASS;
-            }
-
             // Directional pillars from aft_fabroads: right click with wrench rotates 45 degrees
             if (state.hasProperty(com.trafficcraft.horizontaltraffic.util.Rotation45Helper.DIAGONAL)
                     && state.hasProperty(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING)) {

@@ -176,6 +176,7 @@ public class HorizontalTrafficLightBlock extends TrafficLightBlock {
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         super.createBlockStateDefinition(pBuilder);
         pBuilder.add(POSITION);
+        pBuilder.add(com.trafficcraft.horizontaltraffic.util.Rotation45Helper.DIAGONAL);
     }
 
     @Override

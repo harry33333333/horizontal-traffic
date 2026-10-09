@@ -105,11 +105,19 @@ public class Rotation45Helper {
     }
 
     public static boolean hasCustomProperties(BlockState state) {
-        return state.hasProperty(DIAGONAL)
-                || state.hasProperty(NORTH_EAST)
-                || state.hasProperty(SOUTH_EAST)
-                || state.hasProperty(SOUTH_WEST)
-                || state.hasProperty(NORTH_WEST);
+        if (state == null) return false;
+        net.minecraft.world.level.block.Block block = state.getBlock();
+        if (block instanceof com.trafficcraft.horizontaltraffic.block.HorizontalTrafficLightBlock) {
+            return state.hasProperty(DIAGONAL);
+        }
+        if (block.getClass().getName().startsWith("io.github.aftersans53228.aft_fabroads.")) {
+            return state.hasProperty(DIAGONAL)
+                    || state.hasProperty(NORTH_EAST)
+                    || state.hasProperty(SOUTH_EAST)
+                    || state.hasProperty(SOUTH_WEST)
+                    || state.hasProperty(NORTH_WEST);
+        }
+        return false;
     }
 
     public static Map<Property<?>, Comparable<?>> filterProperties(BlockState state) {

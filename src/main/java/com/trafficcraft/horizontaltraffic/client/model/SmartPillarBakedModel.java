@@ -21,7 +21,7 @@ public class SmartPillarBakedModel extends ForwardingBakedModel {
 
     private final List<BakedQuad> compositeQuads;
 
-    public SmartPillarBakedModel(BakedModel original, BakedModel barModel, BlockState state) {
+    public SmartPillarBakedModel(BakedModel original, BlockState state) {
         this.wrapped = original;
 
         List<BakedQuad> quads = new ArrayList<>();
@@ -33,12 +33,18 @@ public class SmartPillarBakedModel extends ForwardingBakedModel {
             quads.addAll(original.getQuads(state, side, random));
         }
 
-        // Gather base bar quads from the bar model
+        // To extract template bar quads, query the original multipart model with NORTH = true
+        BlockState northState = state.setValue(net.minecraft.world.level.block.PipeBlock.NORTH, true);
+        List<BakedQuad> allNorthQuads = new ArrayList<>();
+        allNorthQuads.addAll(original.getQuads(northState, null, random));
+        for (Direction side : Direction.values()) {
+            allNorthQuads.addAll(original.getQuads(northState, side, random));
+        }
+
         List<BakedQuad> barQuads = new ArrayList<>();
-        if (barModel != null) {
-            barQuads.addAll(barModel.getQuads(null, null, random));
-            for (Direction side : Direction.values()) {
-                barQuads.addAll(barModel.getQuads(null, side, random));
+        for (BakedQuad q : allNorthQuads) {
+            if (isNorthBarQuad(q)) {
+                barQuads.add(q);
             }
         }
 
@@ -66,6 +72,17 @@ public class SmartPillarBakedModel extends ForwardingBakedModel {
         }
 
         this.compositeQuads = Collections.unmodifiableList(quads);
+    }
+
+    private static boolean isNorthBarQuad(BakedQuad q) {
+        int[] v = q.getVertices();
+        for (int i = 0; i < 4; i++) {
+            float z = Float.intBitsToFloat(v[i * 8 + 2]);
+            if (z < 0.375f - 1e-4f) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
