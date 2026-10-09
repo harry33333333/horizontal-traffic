@@ -23,5 +23,7 @@ public class HorizontalTrafficClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.HORIZONTAL_TRAFFIC_LIGHT, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.HORIZONTAL_DOUBLE_TRAFFIC_LIGHT, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.HORIZONTAL_SINGLE_TRAFFIC_LIGHT, RenderType.cutout());
+
+        com.trafficcraft.horizontaltraffic.client.model.RotationModelManager.init();
     }
 }

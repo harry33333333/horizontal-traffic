@@ -123,6 +123,7 @@ public class HorizontalTrafficLightBlock extends TrafficLightBlock {
                 .setValue(MODEL, defaultModel)
                 .setValue(POSITION, HorizontalLightPosition.CENTER)
                 .setValue(WATERLOGGED, false)
+                .setValue(com.trafficcraft.horizontaltraffic.util.Rotation45Helper.DIAGONAL, false)
         );
     }
 
@@ -132,17 +133,23 @@ public class HorizontalTrafficLightBlock extends TrafficLightBlock {
         HorizontalLightPosition pos = pState.getValue(POSITION);
         Direction facing = pState.getValue(FACING);
 
+        VoxelShape baseShape = null;
         Map<HorizontalLightPosition, Map<Direction, VoxelShape>> posMap = SHAPES.get(model);
         if (posMap != null) {
             Map<Direction, VoxelShape> dirMap = posMap.get(pos);
             if (dirMap != null) {
-                VoxelShape shape = dirMap.get(facing);
-                if (shape != null) {
-                    return shape;
-                }
+                baseShape = dirMap.get(facing);
             }
         }
-        return rotateShape(facing, Block.box(7.0, 7.0, 13.0, 9.0, 9.0, 16.0));
+        if (baseShape == null) {
+            baseShape = rotateShape(facing, Block.box(7.0, 7.0, 13.0, 9.0, 9.0, 16.0));
+        }
+
+        if (pState.hasProperty(com.trafficcraft.horizontaltraffic.util.Rotation45Helper.DIAGONAL)
+                && pState.getValue(com.trafficcraft.horizontaltraffic.util.Rotation45Helper.DIAGONAL)) {
+            return com.trafficcraft.horizontaltraffic.util.Rotation45Helper.rotateShape45(baseShape);
+        }
+        return baseShape;
     }
 
     @Override
@@ -154,11 +161,13 @@ public class HorizontalTrafficLightBlock extends TrafficLightBlock {
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
         FluidState fluidstate = pContext.getLevel().getFluidState(pContext.getClickedPos());
         boolean flag = fluidstate.getType() == Fluids.WATER;
-        Direction facing = pContext.getHorizontalDirection().getOpposite();
+        com.trafficcraft.horizontaltraffic.util.Rotation45Helper.DirectionState ds =
+                com.trafficcraft.horizontaltraffic.util.Rotation45Helper.getPlacementDirection(pContext.getRotation());
 
         return this.defaultBlockState()
                 .setValue(WATERLOGGED, flag)
-                .setValue(FACING, facing)
+                .setValue(FACING, ds.facing())
+                .setValue(com.trafficcraft.horizontaltraffic.util.Rotation45Helper.DIAGONAL, ds.diagonal())
                 .setValue(MODEL, this.defaultModel)
                 .setValue(POSITION, HorizontalLightPosition.CENTER);
     }
@@ -229,19 +238,37 @@ public class HorizontalTrafficLightBlock extends TrafficLightBlock {
             }
         }
 
-        if (stack.is(ModTags.WRENCHES) || item instanceof WrenchItem) {
+        if (com.trafficcraft.horizontaltraffic.util.Rotation45Helper.isWrench(stack)) {
             if (pPlayer.isShiftKeyDown()) {
                 if (!pLevel.isClientSide) {
-                    HorizontalLightPosition currentPos = pState.getValue(POSITION);
-                    HorizontalLightPosition nextPos = currentPos.next();
-                    BlockState newState = pState.setValue(POSITION, nextPos);
-                    pLevel.setBlock(pPos, newState, Block.UPDATE_ALL);
-                    pLevel.playSound(null, pPos, SoundEvents.ANVIL_USE, SoundSource.BLOCKS, 0.4f, 1.4f);
-                    pPlayer.displayClientMessage(
-                            Component.translatable("message.horizontal_traffic.position_changed",
-                                    Component.translatable("gui.horizontal_traffic.position." + nextPos.getSerializedName())),
-                            true
-                    );
+                    Direction hitFace = pHit.getDirection();
+                    if (hitFace == Direction.UP || hitFace == Direction.DOWN) {
+                        HorizontalLightPosition currentPos = pState.getValue(POSITION);
+                        HorizontalLightPosition nextPos = currentPos.next();
+                        BlockState newState = pState.setValue(POSITION, nextPos);
+                        pLevel.setBlock(pPos, newState, Block.UPDATE_ALL);
+                        pLevel.playSound(null, pPos, SoundEvents.ANVIL_USE, SoundSource.BLOCKS, 0.4f, 1.4f);
+                        pPlayer.displayClientMessage(
+                                Component.translatable("message.horizontal_traffic.position_changed",
+                                        Component.translatable("gui.horizontal_traffic.position." + nextPos.getSerializedName())),
+                                true
+                        );
+                    } else {
+                        Direction currentFacing = pState.getValue(FACING);
+                        boolean currentDiag = pState.getValue(com.trafficcraft.horizontaltraffic.util.Rotation45Helper.DIAGONAL);
+                        com.trafficcraft.horizontaltraffic.util.Rotation45Helper.DirectionState next =
+                                com.trafficcraft.horizontaltraffic.util.Rotation45Helper.getNextDirection(currentFacing, currentDiag);
+                        BlockState newState = pState.setValue(FACING, next.facing())
+                                .setValue(com.trafficcraft.horizontaltraffic.util.Rotation45Helper.DIAGONAL, next.diagonal());
+                        pLevel.setBlock(pPos, newState, Block.UPDATE_ALL);
+                        pLevel.playSound(null, pPos, SoundEvents.ANVIL_USE, SoundSource.BLOCKS, 0.4f, 1.4f);
+                        pPlayer.displayClientMessage(
+                                Component.translatable("message.horizontal_traffic.rotated_45",
+                                        com.trafficcraft.horizontaltraffic.util.Rotation45Helper.getDirectionName(next)),
+                                true
+                        );
+                        com.trafficcraft.horizontaltraffic.util.Rotation45Helper.updateDiagonalNeighbors(pLevel, pPos);
+                    }
                 }
                 return InteractionResult.sidedSuccess(pLevel.isClientSide);
             } else {
@@ -253,6 +280,18 @@ public class HorizontalTrafficLightBlock extends TrafficLightBlock {
         }
 
         return super.use(pState, pLevel, pPos, pPlayer, pHand, pHit);
+    }
+
+    @Override
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
+        super.onPlace(state, level, pos, oldState, isMoving);
+        com.trafficcraft.horizontaltraffic.util.Rotation45Helper.updateDiagonalNeighbors(level, pos);
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        super.onRemove(state, level, pos, newState, isMoving);
+        com.trafficcraft.horizontaltraffic.util.Rotation45Helper.updateDiagonalNeighbors(level, pos);
     }
 
     @Override
