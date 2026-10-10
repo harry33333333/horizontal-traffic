@@ -1,24 +1,23 @@
 package com.trafficcraft.horizontaltraffic.client.model;
 
 import com.trafficcraft.horizontaltraffic.util.Rotation45Helper;
-import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Supplier;
 
-public class SmartPillarBakedModel extends ForwardingBakedModel {
+public class SmartPillarBakedModel implements BakedModel {
 
+    protected final BakedModel wrapped;
     private final List<BakedQuad> compositeQuads;
 
     public SmartPillarBakedModel(BakedModel original, BlockState state) {
@@ -94,16 +93,37 @@ public class SmartPillarBakedModel extends ForwardingBakedModel {
     }
 
     @Override
-    public boolean isVanillaAdapter() {
-        return false;
+    public boolean useAmbientOcclusion() {
+        return this.wrapped.useAmbientOcclusion();
     }
 
     @Override
-    public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos, Supplier<RandomSource> randomSupplier, RenderContext context) {
-        net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter emitter = context.getEmitter();
-        for (BakedQuad quad : this.compositeQuads) {
-            emitter.fromVanilla(quad, null, null);
-            emitter.emit();
-        }
+    public boolean isGui3d() {
+        return this.wrapped.isGui3d();
+    }
+
+    @Override
+    public boolean usesBlockLight() {
+        return this.wrapped.usesBlockLight();
+    }
+
+    @Override
+    public boolean isCustomRenderer() {
+        return this.wrapped.isCustomRenderer();
+    }
+
+    @Override
+    public TextureAtlasSprite getParticleIcon() {
+        return this.wrapped.getParticleIcon();
+    }
+
+    @Override
+    public ItemTransforms getTransforms() {
+        return this.wrapped.getTransforms();
+    }
+
+    @Override
+    public ItemOverrides getOverrides() {
+        return this.wrapped.getOverrides();
     }
 }

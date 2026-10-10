@@ -48,7 +48,7 @@ public abstract class SmartPillarMixin extends PipeBlock {
         }
     }
 
-    @Inject(method = "withConnectionProperties", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "withConnectionProperties", at = @At("RETURN"), cancellable = true, remap = false)
     private void onWithConnectionProperties(BlockGetter world, BlockPos pos, CallbackInfoReturnable<BlockState> cir) {
         BlockState state = cir.getReturnValue();
         if (state != null && state.hasProperty(Rotation45Helper.NORTH_EAST)) {
