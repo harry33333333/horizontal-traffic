@@ -42,6 +42,18 @@ public class Rotation45Helper {
     }
 
     /**
+     * Converts player look direction directly to (facing, diagonal) without adding 180 degrees.
+     * Used for blocks (like T-shaped pillars) whose models are designed with branches pointing opposite facing,
+     * so that the branch faces towards the player upon placement.
+     */
+    public static DirectionState getPlacementDirectionLooking(float playerYaw) {
+        float targetYaw = playerYaw % 360.0f;
+        if (targetYaw < 0) targetYaw += 360.0f;
+        int sector = Math.round(targetYaw / 45.0f) % 8;
+        return fromSector(sector);
+    }
+
+    /**
      * Converts a sector index (0..7, where 0 is 0° South, 1 is 45° SW, etc.) to (facing, diagonal).
      */
     public static DirectionState fromSector(int sector) {
@@ -215,11 +227,16 @@ public class Rotation45Helper {
         double cos = Math.cos(rad);
         double sin = Math.sin(rad);
         shape.forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) -> {
+            double devX = Math.max(Math.abs(minX - 0.5), Math.abs(maxX - 0.5));
+            double devZ = Math.max(Math.abs(minZ - 0.5), Math.abs(maxZ - 0.5));
+            double scaleX = devX > 0.15 ? Math.sqrt(2.0) : 1.0;
+            double scaleZ = devZ > 0.15 ? Math.sqrt(2.0) : 1.0;
+
             double[][] corners = new double[][] {
-                    {minX - 0.5, minZ - 0.5},
-                    {minX - 0.5, maxZ - 0.5},
-                    {maxX - 0.5, minZ - 0.5},
-                    {maxX - 0.5, maxZ - 0.5}
+                    {(minX - 0.5) * scaleX, (minZ - 0.5) * scaleZ},
+                    {(minX - 0.5) * scaleX, (maxZ - 0.5) * scaleZ},
+                    {(maxX - 0.5) * scaleX, (minZ - 0.5) * scaleZ},
+                    {(maxX - 0.5) * scaleX, (maxZ - 0.5) * scaleZ}
             };
             double rMinX = Double.POSITIVE_INFINITY, rMaxX = Double.NEGATIVE_INFINITY;
             double rMinZ = Double.POSITIVE_INFINITY, rMaxZ = Double.NEGATIVE_INFINITY;

@@ -27,7 +27,7 @@ public class RotatableBlockEntityRendererMixin {
         if (be != null && be.getBlockState() != null) {
             BlockState state = be.getBlockState();
             if (state.hasProperty(Rotation45Helper.DIAGONAL) && state.getValue(Rotation45Helper.DIAGONAL)) {
-                graphics.poseStack().mulPose(Axis.YP.rotationDegrees(45.0f));
+                graphics.poseStack().mulPose(Axis.YP.rotationDegrees(-45.0f));
             }
         }
     }

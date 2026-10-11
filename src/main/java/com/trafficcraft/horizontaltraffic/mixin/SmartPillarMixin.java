@@ -88,6 +88,18 @@ public abstract class SmartPillarMixin extends PipeBlock {
     }
 
     @Override
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
+        super.onPlace(state, level, pos, oldState, isMoving);
+        Rotation45Helper.updateDiagonalNeighbors(level, pos);
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        super.onRemove(state, level, pos, newState, isMoving);
+        Rotation45Helper.updateDiagonalNeighbors(level, pos);
+    }
+
+    @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         VoxelShape shape = super.getShape(state, level, pos, context);
         if (state.hasProperty(Rotation45Helper.NORTH_EAST) && state.getValue(Rotation45Helper.NORTH_EAST)) {

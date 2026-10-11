@@ -52,7 +52,12 @@ public abstract class AftDirectionalPillarsMixin extends HorizontalDirectionalBl
     private void onGetStateForPlacement(BlockPlaceContext context, CallbackInfoReturnable<BlockState> cir) {
         BlockState state = cir.getReturnValue();
         if (state != null && state.hasProperty(Rotation45Helper.DIAGONAL)) {
-            Rotation45Helper.DirectionState ds = Rotation45Helper.getPlacementDirection(context.getRotation());
+            boolean isTshaped = (Object) this instanceof HorizontalTshapedPillar
+                    || (Object) this instanceof VerticalTshapedPillar
+                    || (Object) this instanceof VerticalTshapedPillarType2;
+            Rotation45Helper.DirectionState ds = isTshaped
+                    ? Rotation45Helper.getPlacementDirectionLooking(context.getRotation())
+                    : Rotation45Helper.getPlacementDirection(context.getRotation());
             cir.setReturnValue(state.setValue(HorizontalDirectionalBlock.FACING, ds.facing())
                     .setValue(Rotation45Helper.DIAGONAL, ds.diagonal()));
         }
