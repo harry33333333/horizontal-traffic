@@ -43,24 +43,37 @@ public class RotatedBakedModel implements BakedModel {
     }
 
     private static BakedQuad transformQuadWithBarScale(BakedQuad quad, double angleDegrees, boolean isTrafficLight) {
-        if (isTrafficLight) {
-            return QuadTransformHelper.transformQuad(quad, 1.0, 1.0, 1.0, angleDegrees);
-        }
-
         int[] v = quad.getVertices();
         float minX = Float.POSITIVE_INFINITY, maxX = Float.NEGATIVE_INFINITY;
+        float minY = Float.POSITIVE_INFINITY, maxY = Float.NEGATIVE_INFINITY;
         float minZ = Float.POSITIVE_INFINITY, maxZ = Float.NEGATIVE_INFINITY;
         for (int i = 0; i < 4; i++) {
             float x = Float.intBitsToFloat(v[i * 8]);
+            float y = Float.intBitsToFloat(v[i * 8 + 1]);
             float z = Float.intBitsToFloat(v[i * 8 + 2]);
             if (x < minX) minX = x;
             if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
             if (z < minZ) minZ = z;
             if (z > maxZ) maxZ = z;
         }
 
         float maxDevX = Math.max(Math.abs(minX - 0.5f), Math.abs(maxX - 0.5f));
         float maxDevZ = Math.max(Math.abs(minZ - 0.5f), Math.abs(maxZ - 0.5f));
+
+        if (isTrafficLight) {
+            boolean isPoleZ = maxDevZ >= 0.45f && maxDevX <= 0.12f && Math.abs(minY - 0.5f) <= 0.12f && Math.abs(maxY - 0.5f) <= 0.12f;
+            boolean isPoleX = maxDevX >= 0.45f && maxDevZ <= 0.12f && Math.abs(minY - 0.5f) <= 0.12f && Math.abs(maxY - 0.5f) <= 0.12f;
+            if (isPoleZ) {
+                boolean isPositiveDir = maxZ >= 0.95f;
+                return QuadTransformHelper.transformTrafficLightPoleQuad(quad, angleDegrees, true, isPositiveDir);
+            } else if (isPoleX) {
+                boolean isPositiveDir = maxX >= 0.95f;
+                return QuadTransformHelper.transformTrafficLightPoleQuad(quad, angleDegrees, false, isPositiveDir);
+            }
+            return QuadTransformHelper.transformQuad(quad, 1.0, 1.0, 1.0, angleDegrees);
+        }
 
         double scaleX = 1.0;
         double scaleZ = 1.0;

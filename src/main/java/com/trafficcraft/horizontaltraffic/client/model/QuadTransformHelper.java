@@ -36,6 +36,61 @@ public class QuadTransformHelper {
             vertices[idx + 2] = Float.floatToRawIntBits((float) nz);
         }
 
+        return finalizeQuad(quad, vertices, cos, sin);
+    }
+
+    /**
+     * Transforms the SupportPole of a traffic light so that its base remains connected to the bracket (at 0.3125 relative)
+     * while its tip extends to the block boundary corner (0.7071 relative = 0.5 * sqrt(2)).
+     */
+    public static BakedQuad transformTrafficLightPoleQuad(BakedQuad quad, double angleDegrees, boolean isAxisZ, boolean isPositiveDir) {
+        int[] original = quad.getVertices();
+        int[] vertices = Arrays.copyOf(original, original.length);
+
+        double rad = Math.toRadians(angleDegrees);
+        double cos = Math.cos(rad);
+        double sin = Math.sin(rad);
+
+        double targetTipRel = 0.5 * Math.sqrt(2.0);
+        double baseRel = 0.3125;
+        double factor = (targetTipRel - baseRel) / 0.1875;
+
+        for (int v = 0; v < 4; v++) {
+            int idx = v * 8;
+            float x = Float.intBitsToFloat(vertices[idx]);
+            float y = Float.intBitsToFloat(vertices[idx + 1]);
+            float z = Float.intBitsToFloat(vertices[idx + 2]);
+
+            double dx = x - 0.5;
+            double dy = y;
+            double dz = z - 0.5;
+
+            if (isAxisZ) {
+                if (isPositiveDir) {
+                    dz = baseRel + (z - 0.8125) * factor;
+                } else {
+                    dz = -baseRel + (z - 0.1875) * factor;
+                }
+            } else {
+                if (isPositiveDir) {
+                    dx = baseRel + (x - 0.8125) * factor;
+                } else {
+                    dx = -baseRel + (x - 0.1875) * factor;
+                }
+            }
+
+            double nx = 0.5 + (dx * cos - dz * sin);
+            double nz = 0.5 + (dx * sin + dz * cos);
+
+            vertices[idx] = Float.floatToRawIntBits((float) nx);
+            vertices[idx + 1] = Float.floatToRawIntBits((float) dy);
+            vertices[idx + 2] = Float.floatToRawIntBits((float) nz);
+        }
+
+        return finalizeQuad(quad, vertices, cos, sin);
+    }
+
+    private static BakedQuad finalizeQuad(BakedQuad quad, int[] vertices, double cos, double sin) {
         // Transform normal vector
         int normal = vertices[7];
         byte nx = (byte) (normal & 0xFF);

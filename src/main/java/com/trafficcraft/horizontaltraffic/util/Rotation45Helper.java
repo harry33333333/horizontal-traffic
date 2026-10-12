@@ -2,7 +2,9 @@ package com.trafficcraft.horizontaltraffic.util;
 
 import de.mrjulsen.trafficcraft.item.WrenchItem;
 import de.mrjulsen.trafficcraft.registry.ModTags;
+import io.github.aftersans53228.aft_fabroads.block.pillarblock.HorizontalTshapedPillar;
 import io.github.aftersans53228.aft_fabroads.block.pillarblock.SmartPillar;
+import io.github.aftersans53228.aft_fabroads.block.pillarblock.VerticalTshapedPillarType2;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -10,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -255,5 +258,40 @@ public class Rotation45Helper {
             result[0] = Shapes.or(result[0], Shapes.box(rMinX, minY, rMinZ, rMaxX, maxY, rMaxZ));
         });
         return result[0];
+    }
+
+    public static boolean isTshapedPillar(BlockState state) {
+        if (state == null) return false;
+        Block block = state.getBlock();
+        return block instanceof HorizontalTshapedPillar || block instanceof VerticalTshapedPillarType2;
+    }
+
+    public static BlockPos getTshapedPillarStemOffset(BlockState state) {
+        if (!isTshapedPillar(state) || !state.hasProperty(HorizontalDirectionalBlock.FACING)) {
+            return BlockPos.ZERO;
+        }
+        Direction facing = state.getValue(HorizontalDirectionalBlock.FACING);
+        boolean diagonal = state.hasProperty(DIAGONAL) && state.getValue(DIAGONAL);
+        return getTshapedPillarStemOffset(facing, diagonal);
+    }
+
+    public static BlockPos getTshapedPillarStemOffset(Direction facing, boolean diagonal) {
+        if (!diagonal) {
+            return switch (facing) {
+                case NORTH -> new BlockPos(0, 0, 1);
+                case SOUTH -> new BlockPos(0, 0, -1);
+                case EAST -> new BlockPos(-1, 0, 0);
+                case WEST -> new BlockPos(1, 0, 0);
+                default -> BlockPos.ZERO;
+            };
+        } else {
+            return switch (facing) {
+                case NORTH -> new BlockPos(-1, 0, 1);
+                case SOUTH -> new BlockPos(1, 0, -1);
+                case EAST -> new BlockPos(-1, 0, -1);
+                case WEST -> new BlockPos(1, 0, 1);
+                default -> BlockPos.ZERO;
+            };
+        }
     }
 }

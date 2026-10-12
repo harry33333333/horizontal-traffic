@@ -37,6 +37,7 @@ public class HorizontalTrafficMod implements ModInitializer {
         }
 
         registerWrenchCallback();
+        registerTrafficLightPlacementCallback();
 
         LOGGER.info("Horizontal Traffic successfully initialized!");
     }
@@ -102,6 +103,66 @@ public class HorizontalTrafficMod implements ModInitializer {
             }
 
             return net.minecraft.world.InteractionResult.PASS;
+        });
+    }
+
+    private void registerTrafficLightPlacementCallback() {
+        net.fabricmc.fabric.api.event.player.UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
+            net.minecraft.world.item.ItemStack stack = player.getItemInHand(hand);
+            if (!(stack.getItem() instanceof net.minecraft.world.item.BlockItem blockItem)
+                    || !(blockItem.getBlock() instanceof com.trafficcraft.horizontaltraffic.block.HorizontalTrafficLightBlock lightBlock)) {
+                return net.minecraft.world.InteractionResult.PASS;
+            }
+
+            net.minecraft.core.BlockPos pos = hitResult.getBlockPos();
+            net.minecraft.world.level.block.state.BlockState state = level.getBlockState(pos);
+
+            if (!com.trafficcraft.horizontaltraffic.util.Rotation45Helper.isTshapedPillar(state)) {
+                return net.minecraft.world.InteractionResult.PASS;
+            }
+
+            net.minecraft.core.BlockPos offset = com.trafficcraft.horizontaltraffic.util.Rotation45Helper.getTshapedPillarStemOffset(state);
+            if (offset.equals(net.minecraft.core.BlockPos.ZERO)) {
+                return net.minecraft.world.InteractionResult.PASS;
+            }
+
+            net.minecraft.core.BlockPos targetPos = pos.offset(offset);
+            net.minecraft.world.level.block.state.BlockState targetState = level.getBlockState(targetPos);
+            if (!targetState.canBeReplaced()) {
+                return net.minecraft.world.InteractionResult.PASS;
+            }
+
+            if (!level.isClientSide()) {
+                net.minecraft.core.Direction pillarFacing = state.getValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING);
+                boolean pillarDiagonal = state.hasProperty(com.trafficcraft.horizontaltraffic.util.Rotation45Helper.DIAGONAL)
+                        && state.getValue(com.trafficcraft.horizontaltraffic.util.Rotation45Helper.DIAGONAL);
+
+                boolean waterlogged = level.getFluidState(targetPos).getType() == net.minecraft.world.level.material.Fluids.WATER;
+
+                net.minecraft.world.level.block.state.BlockState placeState = lightBlock.defaultBlockState()
+                        .setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, pillarFacing.getOpposite())
+                        .setValue(com.trafficcraft.horizontaltraffic.util.Rotation45Helper.DIAGONAL, pillarDiagonal)
+                        .setValue(com.trafficcraft.horizontaltraffic.block.HorizontalTrafficLightBlock.POSITION,
+                                com.trafficcraft.horizontaltraffic.data.HorizontalLightPosition.CENTER)
+                        .setValue(com.trafficcraft.horizontaltraffic.block.HorizontalTrafficLightBlock.WATERLOGGED, waterlogged);
+
+                level.setBlock(targetPos, placeState, net.minecraft.world.level.block.Block.UPDATE_ALL);
+                net.minecraft.world.item.BlockItem.updateCustomBlockEntityTag(level, player, targetPos, stack);
+
+                net.minecraft.world.level.block.SoundType soundType = placeState.getSoundType();
+                level.playSound(null, targetPos, soundType.getPlaceSound(), net.minecraft.sounds.SoundSource.BLOCKS,
+                        (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
+
+                if (!player.isCreative()) {
+                    stack.shrink(1);
+                }
+                player.awardStat(net.minecraft.stats.Stats.ITEM_USED.get(stack.getItem()));
+
+                com.trafficcraft.horizontaltraffic.util.Rotation45Helper.updateDiagonalNeighbors(level, targetPos);
+                com.trafficcraft.horizontaltraffic.util.Rotation45Helper.updateDiagonalNeighbors(level, pos);
+            }
+
+            return net.minecraft.world.InteractionResult.sidedSuccess(level.isClientSide());
         });
     }
 }
