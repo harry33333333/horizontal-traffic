@@ -28,7 +28,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
         VerticalTshapedPillar.class,
         VerticalTshapedPillarType2.class,
         RoadMastPillar.class,
-        RoadMastPillarBase.class
+        RoadMastPillarBase.class,
+        io.github.aftersans53228.aft_fabroads.block.signblock.SignNormal.class
 })
 public abstract class AftDirectionalPillarsMixin extends HorizontalDirectionalBlock {
 
@@ -52,10 +53,11 @@ public abstract class AftDirectionalPillarsMixin extends HorizontalDirectionalBl
     private void onGetStateForPlacement(BlockPlaceContext context, CallbackInfoReturnable<BlockState> cir) {
         BlockState state = cir.getReturnValue();
         if (state != null && state.hasProperty(Rotation45Helper.DIAGONAL)) {
-            boolean isTshaped = (Object) this instanceof HorizontalTshapedPillar
+            boolean useLooking = (Object) this instanceof HorizontalTshapedPillar
                     || (Object) this instanceof VerticalTshapedPillar
-                    || (Object) this instanceof VerticalTshapedPillarType2;
-            Rotation45Helper.DirectionState ds = isTshaped
+                    || (Object) this instanceof VerticalTshapedPillarType2
+                    || (Object) this instanceof io.github.aftersans53228.aft_fabroads.block.signblock.SignNormal;
+            Rotation45Helper.DirectionState ds = useLooking
                     ? Rotation45Helper.getPlacementDirectionLooking(context.getRotation())
                     : Rotation45Helper.getPlacementDirection(context.getRotation());
             cir.setReturnValue(state.setValue(HorizontalDirectionalBlock.FACING, ds.facing())

@@ -52,8 +52,8 @@ public class QuadTransformHelper {
         double sin = Math.sin(rad);
 
         double targetTipRel = 0.5 * Math.sqrt(2.0);
-        double baseRel = 0.3125;
-        double factor = (targetTipRel - baseRel) / 0.1875;
+        double baseRel = 0.40625;
+        double factor = (targetTipRel - baseRel) / 0.09375;
 
         for (int v = 0; v < 4; v++) {
             int idx = v * 8;
@@ -67,15 +67,15 @@ public class QuadTransformHelper {
 
             if (isAxisZ) {
                 if (isPositiveDir) {
-                    dz = baseRel + (z - 0.8125) * factor;
+                    dz = baseRel + (z - 0.90625) * factor;
                 } else {
-                    dz = -baseRel + (z - 0.1875) * factor;
+                    dz = -baseRel + (z - 0.09375) * factor;
                 }
             } else {
                 if (isPositiveDir) {
-                    dx = baseRel + (x - 0.8125) * factor;
+                    dx = baseRel + (x - 0.90625) * factor;
                 } else {
-                    dx = -baseRel + (x - 0.1875) * factor;
+                    dx = -baseRel + (x - 0.09375) * factor;
                 }
             }
 
@@ -88,6 +88,79 @@ public class QuadTransformHelper {
         }
 
         return finalizeQuad(quad, vertices, cos, sin);
+    }
+
+    /**
+     * Transforms a road sign quad: shifts it along the stem-connecting axis to eliminate the 45-degree
+     * gap with the T-pillar, rotates it 45 degrees, and applies uniform lighting without shadow wedges.
+     */
+    public static BakedQuad transformSignQuad(BakedQuad quad, double angleDegrees, Direction facing) {
+        int[] original = quad.getVertices();
+        int[] vertices = Arrays.copyOf(original, original.length);
+
+        double rad = Math.toRadians(angleDegrees);
+        double cos = Math.cos(rad);
+        double sin = Math.sin(rad);
+
+        // At 45 degrees, the T-stem tip extends to 0.5 * sqrt(2),
+        // while the unshifted sign clamp sits at 0.5. Shift by the difference to meet the stem.
+        double delta = 0.5 * (Math.sqrt(2.0) - 1.0);
+        double shiftX = 0.0;
+        double shiftZ = 0.0;
+        if (facing == Direction.NORTH) {
+            shiftZ = -delta;
+        } else if (facing == Direction.SOUTH) {
+            shiftZ = delta;
+        } else if (facing == Direction.WEST) {
+            shiftX = -delta;
+        } else if (facing == Direction.EAST) {
+            shiftX = delta;
+        }
+
+        for (int v = 0; v < 4; v++) {
+            int idx = v * 8;
+            float x = Float.intBitsToFloat(vertices[idx]);
+            float y = Float.intBitsToFloat(vertices[idx + 1]);
+            float z = Float.intBitsToFloat(vertices[idx + 2]);
+
+            double dx = (x + shiftX) - 0.5;
+            double dy = y;
+            double dz = (z + shiftZ) - 0.5;
+
+            double nx = 0.5 + (dx * cos - dz * sin);
+            double nz = 0.5 + (dx * sin + dz * cos);
+
+            vertices[idx] = Float.floatToRawIntBits((float) nx);
+            vertices[idx + 1] = Float.floatToRawIntBits((float) dy);
+            vertices[idx + 2] = Float.floatToRawIntBits((float) nz);
+        }
+
+        // Transform normal vector
+        int normal = vertices[7];
+        byte ox = (byte) (normal & 0xFF);
+        byte oy = (byte) ((normal >> 8) & 0xFF);
+        byte oz = (byte) ((normal >> 16) & 0xFF);
+        double rNx = ox * cos - oz * sin;
+        double rNz = ox * sin + oz * cos;
+        int newNormal = ((int) ((byte) rNx) & 0xFF)
+                | (((int) oy & 0xFF) << 8)
+                | (((int) ((byte) rNz) & 0xFF) << 16);
+        for (int v = 0; v < 4; v++) {
+            vertices[v * 8 + 7] = newNormal;
+        }
+
+        Direction origDir = quad.getDirection();
+        Direction dominantDir;
+        if (origDir == facing.getOpposite()) {
+            dominantDir = facing.getOpposite();
+        } else if (origDir == facing) {
+            dominantDir = facing;
+        } else {
+            dominantDir = origDir;
+        }
+
+        // Disable directional shade to ensure completely uniform, shadow-free sign faces
+        return new BakedQuad(vertices, quad.getTintIndex(), dominantDir, quad.getSprite(), false);
     }
 
     private static BakedQuad finalizeQuad(BakedQuad quad, int[] vertices, double cos, double sin) {

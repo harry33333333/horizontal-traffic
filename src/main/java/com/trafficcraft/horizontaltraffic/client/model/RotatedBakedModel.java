@@ -18,6 +18,7 @@ public class RotatedBakedModel implements BakedModel {
 
     protected final BakedModel wrapped;
     private final List<BakedQuad> rotatedQuads;
+    private final boolean isSign;
 
     public RotatedBakedModel(BakedModel original, @Nullable BlockState state, double angleDegrees) {
         this.wrapped = original;
@@ -26,16 +27,28 @@ public class RotatedBakedModel implements BakedModel {
         RandomSource random = RandomSource.create(42L);
 
         boolean isTrafficLight = state != null && state.getBlock() instanceof com.trafficcraft.horizontaltraffic.block.HorizontalTrafficLightBlock;
+        this.isSign = state != null && state.getBlock() instanceof io.github.aftersans53228.aft_fabroads.block.signblock.SignNormal;
+        Direction signFacing = (this.isSign && state.hasProperty(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING))
+                ? state.getValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING)
+                : Direction.NORTH;
 
         // Gather unculled quads
         for (BakedQuad q : original.getQuads(state, null, random)) {
-            quads.add(transformQuadWithBarScale(q, angleDegrees, isTrafficLight));
+            if (this.isSign) {
+                quads.add(QuadTransformHelper.transformSignQuad(q, angleDegrees, signFacing));
+            } else {
+                quads.add(transformQuadWithBarScale(q, angleDegrees, isTrafficLight));
+            }
         }
 
         // Gather culled quads and also rotate them into unculled list
         for (Direction side : Direction.values()) {
             for (BakedQuad q : original.getQuads(state, side, random)) {
-                quads.add(transformQuadWithBarScale(q, angleDegrees, isTrafficLight));
+                if (this.isSign) {
+                    quads.add(QuadTransformHelper.transformSignQuad(q, angleDegrees, signFacing));
+                } else {
+                    quads.add(transformQuadWithBarScale(q, angleDegrees, isTrafficLight));
+                }
             }
         }
 
@@ -99,6 +112,9 @@ public class RotatedBakedModel implements BakedModel {
 
     @Override
     public boolean useAmbientOcclusion() {
+        if (this.isSign) {
+            return false;
+        }
         return this.wrapped.useAmbientOcclusion();
     }
 

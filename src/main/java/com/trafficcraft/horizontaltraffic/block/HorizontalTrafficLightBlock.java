@@ -58,7 +58,7 @@ public class HorizontalTrafficLightBlock extends TrafficLightBlock {
     private final TrafficLightModel defaultModel;
 
     static {
-        VoxelShape supportPole = Block.box(7.0, 7.0, 13.0, 9.0, 9.0, 16.0);
+        VoxelShape supportPole = Block.box(7.0, 7.0, 14.5, 9.0, 9.0, 16.0);
 
         for (TrafficLightModel model : TrafficLightModel.values()) {
             Map<HorizontalLightPosition, Map<Direction, VoxelShape>> posMap = new EnumMap<>(HorizontalLightPosition.class);
@@ -70,20 +70,20 @@ public class HorizontalTrafficLightBlock extends TrafficLightBlock {
 
                 VoxelShape body;
                 if (model == TrafficLightModel.THREE_LIGHTS) {
-                    body = Block.box(0.0, minY, 6.5, 16.0, maxY, 11.0);
+                    body = Block.box(0.0, minY, 8.0, 16.0, maxY, 12.5);
                 } else if (model == TrafficLightModel.TWO_LIGHTS) {
-                    body = Block.box(3.0, minY, 6.5, 13.0, maxY, 11.0);
+                    body = Block.box(3.0, minY, 8.0, 13.0, maxY, 12.5);
                 } else {
-                    body = Block.box(4.0, minY, 6.5, 12.0, maxY, 11.0);
+                    body = Block.box(4.0, minY, 8.0, 12.0, maxY, 12.5);
                 }
 
                 VoxelShape bracket;
                 if (pos == HorizontalLightPosition.BOTTOM) {
-                    bracket = Block.box(6.0, 6.0, 11.0, 10.0, 9.0, 13.0);
+                    bracket = Block.box(6.0, 6.0, 12.5, 10.0, 9.0, 14.5);
                 } else if (pos == HorizontalLightPosition.TOP) {
-                    bracket = Block.box(6.0, 7.0, 11.0, 10.0, 10.0, 13.0);
+                    bracket = Block.box(6.0, 7.0, 12.5, 10.0, 10.0, 14.5);
                 } else {
-                    bracket = Block.box(6.0, 7.0, 11.0, 10.0, 9.0, 13.0);
+                    bracket = Block.box(6.0, 7.0, 12.5, 10.0, 9.0, 14.5);
                 }
 
                 VoxelShape baseNorthShape = Shapes.or(supportPole, body, bracket);
@@ -142,7 +142,7 @@ public class HorizontalTrafficLightBlock extends TrafficLightBlock {
             }
         }
         if (baseShape == null) {
-            baseShape = rotateShape(facing, Block.box(7.0, 7.0, 13.0, 9.0, 9.0, 16.0));
+            baseShape = rotateShape(facing, Block.box(7.0, 7.0, 14.5, 9.0, 9.0, 16.0));
         }
 
         if (pState.hasProperty(com.trafficcraft.horizontaltraffic.util.Rotation45Helper.DIAGONAL)

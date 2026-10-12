@@ -192,7 +192,11 @@ public class Rotation45Helper {
         if (state.hasProperty(DIAGONAL)) {
             return state.getValue(DIAGONAL);
         }
-        return true; // SmartPillar, VerticalStraightPillar, etc.
+        Block block = state.getBlock();
+        return block instanceof SmartPillar
+                || block instanceof io.github.aftersans53228.aft_fabroads.block.pillarblock.VerticalStraightPillar
+                || block instanceof io.github.aftersans53228.aft_fabroads.block.pillarblock.VerticalStraightPillarThin
+                || block instanceof io.github.aftersans53228.aft_fabroads.block.pillarblock.PillarBase;
     }
 
     /**

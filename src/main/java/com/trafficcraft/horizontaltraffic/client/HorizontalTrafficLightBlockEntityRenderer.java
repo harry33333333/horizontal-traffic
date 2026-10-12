@@ -48,7 +48,7 @@ public class HorizontalTrafficLightBlockEntityRenderer extends RotatableBlockEnt
 
         for (int i = 0; i < be.getColorSlotCount() && i < lightCount && i < bulbXOffsets.length; i++) {
             graphics.poseStack().pushPose();
-            graphics.poseStack().translate(bulbXOffsets[i], bulbY, 7.0f);
+            graphics.poseStack().translate(bulbXOffsets[i], bulbY, 5.5f);
 
             TrafficLightColor slotColor = be.getColorOfSlot(i);
             if (slotColor != null && be.isColorEnabled(slotColor, true)) {
