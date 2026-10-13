@@ -49,17 +49,8 @@ public abstract class TrafficLightControllerBlockEntityMixin {
             if (lightPos != null && level.isLoaded(lightPos)) {
                 BlockEntity be = level.getBlockEntity(lightPos);
                 if (be instanceof TrafficLightBlockEntity light) {
-                    if (((IGreenFlashConfigurable) light).isYellowFlashingEnabled()) {
-                        GreenFlashHelper.handleYellowFlashing(light, level);
-                        GreenFlashHelper.resetCountdown(light);
-                        continue;
-                    }
                     if (light.getControlType() == TrafficLightControlType.REMOTE) {
-                        if (((IGreenFlashConfigurable) light).isGreenFlashEnabled()) {
-                            int rem = GreenFlashHelper.getRemainingGreenTicks(schedule, currentTick, light.getPhaseId(), true);
-                            GreenFlashHelper.handleFlashing(light, rem);
-                        }
-                        GreenFlashHelper.updateCountdown(light, schedule, currentTick, light.getPhaseId(), true);
+                        GreenFlashHelper.updateLightState(light, schedule, currentTick, light.getPhaseId(), true);
                     }
                 }
             }

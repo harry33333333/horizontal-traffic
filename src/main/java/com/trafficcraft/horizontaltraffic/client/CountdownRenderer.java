@@ -17,6 +17,9 @@ public class CountdownRenderer {
         if (!flashBe.isCountdownEnabled()) return;
         if (flashBe.isYellowFlashingEnabled()) return;
 
+        // User requirement: When yellow light is lit, countdown does NOT display!
+        if (be.isColorEnabled(TrafficLightColor.YELLOW, true)) return;
+
         int number = flashBe.getCountdownNumber();
         if (number < 1 || number > 9) return;
 
@@ -41,9 +44,9 @@ public class CountdownRenderer {
 
         PoseStack poseStack = graphics.poseStack();
         poseStack.pushPose();
-        // Bulb is 4x4 pixels (from 0 to 4 in X and Y), centered at (2.0f, 2.0f)
+        // Bulb is 4x4 pixels (X: 0 to 4, Y: 0 to -4), centered at (2.0f, -2.0f)
         // Bulb front face is at Z = 1.0f, offset slightly to 1.05f to avoid z-fighting
-        poseStack.translate(2.0f, 2.0f, 1.05f);
+        poseStack.translate(2.0f, -2.0f, 1.05f);
         poseStack.scale(scale, scale, 1.0f);
 
         // Center horizontally and vertically (visible digit glyph is ~7px tall)

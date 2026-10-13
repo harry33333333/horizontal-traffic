@@ -154,15 +154,11 @@ public abstract class TrafficLightBlockEntityMixin implements IGreenFlashConfigu
         if (this.running && this.getControlType() == TrafficLightControlType.OWN_SCHEDULE) {
             if (this.schedule != null) {
                 int currentTick = Math.max(0, this.ticker - 1);
-                if (this.horizontal_traffic$greenFlashEnabled) {
-                    int rem = GreenFlashHelper.getRemainingGreenTicks(this.schedule, currentTick, this.phaseId, false);
-                    GreenFlashHelper.handleFlashing(self, rem);
-                }
-                GreenFlashHelper.updateCountdown(self, this.schedule, currentTick, this.phaseId, false);
+                GreenFlashHelper.updateLightState(self, this.schedule, currentTick, this.phaseId, false);
             } else {
                 GreenFlashHelper.resetCountdown(self);
             }
-        } else {
+        } else if (this.getControlType() != TrafficLightControlType.REMOTE) {
             GreenFlashHelper.resetCountdown(self);
         }
     }
