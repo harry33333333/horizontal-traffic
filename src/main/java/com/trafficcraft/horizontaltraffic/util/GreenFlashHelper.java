@@ -22,17 +22,19 @@ public class GreenFlashHelper {
 
     public static class ScheduleTimelineResult {
         public final int remainingTicks;
+        public final int totalPhaseDuration;
         public final boolean isGreen;
 
-        public ScheduleTimelineResult(int remainingTicks, boolean isGreen) {
+        public ScheduleTimelineResult(int remainingTicks, int totalPhaseDuration, boolean isGreen) {
             this.remainingTicks = remainingTicks;
+            this.totalPhaseDuration = totalPhaseDuration;
             this.isGreen = isGreen;
         }
     }
 
     public static ScheduleTimelineResult calculateRemainingTicks(TrafficLightSchedule schedule, int currentTick, int targetPhase, boolean isRemote) {
         if (schedule == null || schedule.getEntries() == null || schedule.getEntries().isEmpty()) {
-            return new ScheduleTimelineResult(-1, false);
+            return new ScheduleTimelineResult(-1, 0, false);
         }
 
         List<TrafficLightScheduleEntryData> entries = schedule.getEntries();
@@ -41,7 +43,7 @@ public class GreenFlashHelper {
             totalDuration += e.getDurationTicks();
         }
         if (totalDuration <= 0) {
-            return new ScheduleTimelineResult(-1, false);
+            return new ScheduleTimelineResult(-1, 0, false);
         }
 
         class ChangeEvent {
@@ -83,7 +85,7 @@ public class GreenFlashHelper {
         }
 
         if (events.isEmpty()) {
-            return new ScheduleTimelineResult(-1, false);
+            return new ScheduleTimelineResult(-1, 0, false);
         }
 
         // Stable sort by trigger tick
@@ -119,42 +121,61 @@ public class GreenFlashHelper {
         ChangeEvent active = events.get(activeIdx);
         // Yellow phase does not count down!
         if (active.hasYellow) {
-            return new ScheduleTimelineResult(-1, false);
+            return new ScheduleTimelineResult(-1, 0, false);
         }
 
         boolean isGreen = active.hasGreen;
         if (!isGreen && !active.hasRed) {
-            return new ScheduleTimelineResult(-1, false);
+            return new ScheduleTimelineResult(-1, 0, false);
         }
 
         // Find the next event that changes this color
         int n = events.size();
-        int rem = 0;
-        boolean foundEnd = false;
+        int endT = -1;
         for (int step = 1; step <= n; step++) {
             int nextIdx = (activeIdx + step) % n;
             ChangeEvent nextEv = events.get(nextIdx);
             boolean hasSameColor = isGreen ? nextEv.hasGreen : nextEv.hasRed;
             if (!hasSameColor || nextEv.hasYellow) {
-                int nextT = nextEv.tick;
-                if (nextT > normT) {
-                    rem = nextT - normT;
-                } else {
-                    if (!schedule.isLoop()) {
-                        return new ScheduleTimelineResult(-1, false);
-                    }
-                    rem = (totalDuration - normT) + nextT;
-                }
-                foundEnd = true;
+                endT = nextEv.tick;
                 break;
             }
         }
 
-        if (!foundEnd) {
-            return new ScheduleTimelineResult(-1, false);
+        if (endT == -1) {
+            return new ScheduleTimelineResult(-1, 0, false);
         }
 
-        return new ScheduleTimelineResult(rem, isGreen);
+        // Find the start event of this continuous color phase
+        int startT = active.tick;
+        for (int step = 1; step <= n; step++) {
+            int prevIdx = (activeIdx - step + n) % n;
+            ChangeEvent prevEv = events.get(prevIdx);
+            boolean hasSameColor = isGreen ? prevEv.hasGreen : prevEv.hasRed;
+            if (!hasSameColor || prevEv.hasYellow) {
+                startT = events.get((prevIdx + 1) % n).tick;
+                break;
+            }
+        }
+
+        int rem;
+        if (endT > normT) {
+            rem = endT - normT;
+        } else {
+            if (!schedule.isLoop()) {
+                return new ScheduleTimelineResult(-1, 0, false);
+            }
+            rem = (totalDuration - normT) + endT;
+        }
+
+        int totalPhaseDur;
+        if (endT > startT) {
+            totalPhaseDur = endT - startT;
+        } else {
+            totalPhaseDur = (totalDuration - startT) + endT;
+        }
+
+        return new ScheduleTimelineResult(rem, totalPhaseDur, isGreen);
     }
 
     public static int getRemainingGreenTicks(TrafficLightSchedule schedule, int currentTick, int targetPhase, boolean isRemote) {
@@ -196,7 +217,25 @@ public class GreenFlashHelper {
 
         ScheduleTimelineResult res = calculateRemainingTicks(schedule, currentTick, phaseId, isRemote);
 
-        // Handle green flashing
+        TrafficLightColor currentColor = res.isGreen ? TrafficLightColor.GREEN : TrafficLightColor.RED;
+
+        // User requirement: 在红灯或者绿灯倒计时前第11s时候，对应的红灯或者绿灯，会很快地闪一下（0.2s完成，即 4 ticks：220~217 ticks remaining）
+        // 当然如果不足12s（< 240 ticks），那就不用闪了。
+        if (config.isCountdownEnabled() && hasYellowSlot(light) && res.totalPhaseDuration >= 240) {
+            if (res.remainingTicks >= 217 && res.remainingTicks <= 220) {
+                if (light.isColorEnabled(currentColor, true)) {
+                    light.enableOnlyColors(List.of());
+                    syncBlockEntity(light);
+                }
+            } else if (res.remainingTicks < 217 && (!res.isGreen || !config.isGreenFlashEnabled() || res.remainingTicks > 60)) {
+                if (!light.isColorEnabled(currentColor, true)) {
+                    light.enableOnlyColors(List.of(currentColor));
+                    syncBlockEntity(light);
+                }
+            }
+        }
+
+        // Handle green flashing in final 3 seconds (60 ticks)
         if (res.isGreen) {
             if (config.isGreenFlashEnabled() && res.remainingTicks > 0 && res.remainingTicks <= 60) {
                 handleFlashing(light, res.remainingTicks);

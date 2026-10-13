@@ -28,6 +28,7 @@ It introduces realistic **horizontal traffic lights** (signals arranged horizont
 
 ### 3. Integrated Digital Countdown Display
 - **Yellow Lens Countdown (1–9s)**: Displays a single-digit countdown timer on the center yellow aspect counting down from 9s to 1s before changing phase (Red phase counts down in glowing Red, Green phase counts down in glowing Green; Yellow phase does not count down).
+- **11s Pre-Countdown Alert Blink**: For Red or Green phases lasting at least 12 seconds (≥ 240 ticks), exactly 11 seconds before phase transition (prior to countdown digit appearance), the active Red or Green lamp quickly blinks off for 0.2s (4 ticks) and resumes illumination as an advance warning; phases shorter than 12s automatically omit this blink.
 - **Synchronized Green Flashing**: In the final 3 seconds of Green phase (3, 2, 1), the countdown digit flashes in exact synchronization with the green lamp if green flashing is enabled (or stays steadily lit if green flashing is disabled).
 - **Dual Orientation & Two-Aspect Support**: Works seamlessly on both horizontal triple lights and vanilla TrafficCraft vertical lights. Automatically omitted on two-aspect signals (such as pedestrian lights without a yellow aspect).
 - **Independent Control & Seamless Upgrades**: Each traffic light has its own independent countdown switch, accessible via the GUI. Enabled by default; existing worlds and blocks automatically default to enabled upon upgrading the mod.
@@ -75,7 +76,7 @@ Build using Gradle:
 ./gradlew build
 ```
 
-The output jar will be located at: `build/libs/horizontal_traffic-1.1.0.jar`.
+The output jar will be located at: `build/libs/horizontal_traffic-1.1.1.jar`.
 
 ---
 
