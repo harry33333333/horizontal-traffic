@@ -26,6 +26,11 @@ public abstract class TrafficLightConfigScreenMixin extends DLWindow {
         super(null);
     }
 
+    @Inject(method = "<init>", at = @At("TAIL"), remap = false)
+    private void onInit(de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLWindowManager windowManager, net.minecraft.world.level.Level level, net.minecraft.core.BlockPos blockPos, CallbackInfo ci) {
+        this.setSize(256.0d, 280.0d);
+    }
+
     @Inject(method = "close", at = @At("HEAD"), remap = false)
     private void onClose(CallbackInfo ci) {
         if (config instanceof com.trafficcraft.horizontaltraffic.util.IGreenFlashConfigurable flashConfig) {

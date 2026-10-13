@@ -31,6 +31,8 @@ public abstract class TrafficLightControlSettingsMixin extends DLGuiComponent {
 
     @Inject(method = "<init>", at = @At("TAIL"), remap = false)
     private void onInit(int x, int y, int w, int h, TrafficLightConfig config, CallbackInfo ci) {
+        this.setHeight(142.0d);
+
         this.addEventListener(DLGuiStandardEvents.TickEvent.class, (s, e) -> {
             syncPhaseIdFromComponents();
             return false;
@@ -45,7 +47,6 @@ public abstract class TrafficLightControlSettingsMixin extends DLGuiComponent {
         flowLayout.wrap.set(true);
         flowLayout.verticalGap.set(3);
         bottomPanel.layout.set(flowLayout);
-        bottomPanel.layoutContraint.set(de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout.FlowConstraint.FILL);
 
         de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLCheckBox greenBox =
                 new de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLCheckBox(0, 0, 95, 14);
