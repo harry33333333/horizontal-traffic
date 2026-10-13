@@ -15,6 +15,7 @@ public abstract class TrafficLightConfigMixin implements IGreenFlashConfigurable
 
     private boolean horizontal_traffic$greenFlashEnabled = true;
     private boolean horizontal_traffic$yellowFlashingEnabled = false;
+    private boolean horizontal_traffic$countdownEnabled = true;
 
     @Override
     public boolean isGreenFlashEnabled() {
@@ -36,6 +37,34 @@ public abstract class TrafficLightConfigMixin implements IGreenFlashConfigurable
         this.horizontal_traffic$yellowFlashingEnabled = enabled;
     }
 
+    @Override
+    public boolean isCountdownEnabled() {
+        return this.horizontal_traffic$countdownEnabled;
+    }
+
+    @Override
+    public void setCountdownEnabled(boolean enabled) {
+        this.horizontal_traffic$countdownEnabled = enabled;
+    }
+
+    @Override
+    public int getCountdownNumber() {
+        return 0;
+    }
+
+    @Override
+    public void setCountdownNumber(int number) {
+    }
+
+    @Override
+    public boolean isCountdownGreen() {
+        return false;
+    }
+
+    @Override
+    public void setCountdownGreen(boolean isGreen) {
+    }
+
     @Inject(method = "<init>(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V", at = @At("TAIL"))
     private void onInit(Level level, BlockPos blockPos, CallbackInfo ci) {
         if (level != null && blockPos != null) {
@@ -43,10 +72,12 @@ public abstract class TrafficLightConfigMixin implements IGreenFlashConfigurable
             if (be instanceof IGreenFlashConfigurable flashConfig) {
                 this.horizontal_traffic$greenFlashEnabled = flashConfig.isGreenFlashEnabled();
                 this.horizontal_traffic$yellowFlashingEnabled = flashConfig.isYellowFlashingEnabled();
+                this.horizontal_traffic$countdownEnabled = flashConfig.isCountdownEnabled();
                 return;
             }
         }
         this.horizontal_traffic$greenFlashEnabled = true;
         this.horizontal_traffic$yellowFlashingEnabled = false;
+        this.horizontal_traffic$countdownEnabled = true;
     }
 }

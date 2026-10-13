@@ -17,10 +17,15 @@ public class GreenFlashHelper {
 
     public static boolean lastConfigGreenFlash = true;
     public static boolean lastConfigYellowFlash = false;
+    public static boolean lastConfigCountdown = true;
     public static boolean isApplyingYellowFlash = false;
 
     public static int getRemainingGreenTicks(TrafficLightSchedule schedule, int currentTick, int targetPhase, boolean isRemote) {
-        if (schedule == null || schedule.getEntries() == null || schedule.getEntries().isEmpty()) {
+        return getRemainingColorTicks(schedule, currentTick, targetPhase, isRemote, TrafficLightColor.GREEN);
+    }
+
+    public static int getRemainingColorTicks(TrafficLightSchedule schedule, int currentTick, int targetPhase, boolean isRemote, TrafficLightColor targetColor) {
+        if (schedule == null || schedule.getEntries() == null || schedule.getEntries().isEmpty() || targetColor == null) {
             return -1;
         }
 
@@ -33,36 +38,39 @@ public class GreenFlashHelper {
             return -1;
         }
 
-        class PhaseEvent {
-            final int cumTick;
-            final boolean hasGreen;
+        class Interval {
+            final int start;
+            final int end;
+            final boolean hasColor;
 
-            PhaseEvent(int cumTick, boolean hasGreen) {
-                this.cumTick = cumTick;
-                this.hasGreen = hasGreen;
+            Interval(int start, int end, boolean hasColor) {
+                this.start = start;
+                this.end = end;
+                this.hasColor = hasColor;
             }
         }
 
-        List<PhaseEvent> events = new ArrayList<>();
+        List<Interval> intervals = new ArrayList<>();
         int cum = 0;
         for (TrafficLightScheduleEntryData e : entries) {
+            int start = cum;
             cum += e.getDurationTicks();
             if (!isRemote || e.getPhaseId() == targetPhase) {
-                boolean hasGreen = false;
+                boolean hasColor = false;
                 List<TrafficLightColor> colors = e.getEnabledColors();
                 if (colors != null) {
                     for (TrafficLightColor c : colors) {
-                        if (c == TrafficLightColor.GREEN || c.isSimilar(TrafficLightColor.GREEN)) {
-                            hasGreen = true;
+                        if (c == targetColor || c.isSimilar(targetColor)) {
+                            hasColor = true;
                             break;
                         }
                     }
                 }
-                events.add(new PhaseEvent(cum, hasGreen));
+                intervals.add(new Interval(start, cum, hasColor));
             }
         }
 
-        if (events.isEmpty()) {
+        if (intervals.isEmpty()) {
             return -1;
         }
 
@@ -71,39 +79,107 @@ public class GreenFlashHelper {
             normalizedTick += totalDuration;
         }
 
-        // Active event for currentTick
-        PhaseEvent activeEvent = null;
-        for (PhaseEvent ev : events) {
-            if (normalizedTick >= ev.cumTick) {
-                activeEvent = ev;
+        int activeIdx = -1;
+        for (int i = 0; i < intervals.size(); i++) {
+            Interval it = intervals.get(i);
+            if (normalizedTick >= it.start && normalizedTick < it.end) {
+                activeIdx = i;
+                break;
             }
         }
-        if (activeEvent == null) {
-            activeEvent = events.get(events.size() - 1);
-        }
 
-        if (!activeEvent.hasGreen) {
+        if (activeIdx == -1 || !intervals.get(activeIdx).hasColor) {
             return -1;
         }
 
-        // Find next event without green
-        for (PhaseEvent ev : events) {
-            if (ev.cumTick > normalizedTick) {
-                if (!ev.hasGreen) {
-                    return ev.cumTick - normalizedTick;
-                }
+        int currRem = intervals.get(activeIdx).end - normalizedTick;
+        int curr = activeIdx + 1;
+        while (curr < intervals.size()) {
+            Interval it = intervals.get(curr);
+            if (!it.hasColor) {
+                return currRem;
             }
+            currRem += (it.end - it.start);
+            curr++;
         }
 
         if (schedule.isLoop()) {
-            for (PhaseEvent ev : events) {
-                if (!ev.hasGreen) {
-                    return (totalDuration - normalizedTick) + ev.cumTick;
+            curr = 0;
+            while (curr < activeIdx) {
+                Interval it = intervals.get(curr);
+                if (!it.hasColor) {
+                    return currRem;
                 }
+                currRem += (it.end - it.start);
+                curr++;
             }
         }
 
         return -1;
+    }
+
+    public static boolean hasYellowSlot(TrafficLightBlockEntity light) {
+        if (light == null) return false;
+        for (int i = 0; i < light.getColorSlotCount(); i++) {
+            TrafficLightColor c = light.getColorOfSlot(i);
+            if (c == TrafficLightColor.YELLOW || (c != null && c.isSimilar(TrafficLightColor.YELLOW))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void updateCountdown(TrafficLightBlockEntity light, TrafficLightSchedule schedule, int currentTick, int phaseId, boolean isRemote) {
+        if (light == null) return;
+        IGreenFlashConfigurable config = (IGreenFlashConfigurable) light;
+        if (!config.isCountdownEnabled() || config.isYellowFlashingEnabled() || !hasYellowSlot(light)) {
+            resetCountdown(light);
+            return;
+        }
+
+        if (schedule == null || schedule.getEntries() == null || schedule.getEntries().isEmpty()) {
+            resetCountdown(light);
+            return;
+        }
+
+        int greenRem = getRemainingColorTicks(schedule, currentTick, phaseId, isRemote, TrafficLightColor.GREEN);
+        boolean isGreen = false;
+        int remTicks = -1;
+
+        if (greenRem > 0) {
+            isGreen = true;
+            remTicks = greenRem;
+        } else {
+            int redRem = getRemainingColorTicks(schedule, currentTick, phaseId, isRemote, TrafficLightColor.RED);
+            if (redRem > 0) {
+                isGreen = false;
+                remTicks = redRem;
+            }
+        }
+
+        int number = 0;
+        if (remTicks >= 1 && remTicks <= 180) {
+            number = (remTicks + 19) / 20;
+        }
+
+        setCountdownState(light, number, isGreen);
+    }
+
+    public static void resetCountdown(TrafficLightBlockEntity light) {
+        if (light == null) return;
+        IGreenFlashConfigurable config = (IGreenFlashConfigurable) light;
+        if (config.getCountdownNumber() != 0) {
+            setCountdownState(light, 0, false);
+        }
+    }
+
+    public static void setCountdownState(TrafficLightBlockEntity light, int number, boolean isGreen) {
+        IGreenFlashConfigurable config = (IGreenFlashConfigurable) light;
+        if (config.getCountdownNumber() != number || config.isCountdownGreen() != isGreen) {
+            config.setCountdownNumber(number);
+            config.setCountdownGreen(isGreen);
+            syncBlockEntity(light);
+        }
     }
 
     public static void handleFlashing(TrafficLightBlockEntity light, int remainingTicks) {

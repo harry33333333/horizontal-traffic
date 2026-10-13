@@ -40,6 +40,9 @@ public abstract class TrafficLightBlockEntityMixin implements IGreenFlashConfigu
 
     private boolean horizontal_traffic$greenFlashEnabled = true;
     private boolean horizontal_traffic$yellowFlashingEnabled = false;
+    private boolean horizontal_traffic$countdownEnabled = true;
+    private int horizontal_traffic$countdownNumber = 0;
+    private boolean horizontal_traffic$countdownIsGreen = false;
 
     @Override
     public boolean isGreenFlashEnabled() {
@@ -71,6 +74,36 @@ public abstract class TrafficLightBlockEntityMixin implements IGreenFlashConfigu
         }
     }
 
+    @Override
+    public boolean isCountdownEnabled() {
+        return this.horizontal_traffic$countdownEnabled;
+    }
+
+    @Override
+    public void setCountdownEnabled(boolean enabled) {
+        this.horizontal_traffic$countdownEnabled = enabled;
+    }
+
+    @Override
+    public int getCountdownNumber() {
+        return this.horizontal_traffic$countdownNumber;
+    }
+
+    @Override
+    public void setCountdownNumber(int number) {
+        this.horizontal_traffic$countdownNumber = number;
+    }
+
+    @Override
+    public boolean isCountdownGreen() {
+        return this.horizontal_traffic$countdownIsGreen;
+    }
+
+    @Override
+    public void setCountdownGreen(boolean isGreen) {
+        this.horizontal_traffic$countdownIsGreen = isGreen;
+    }
+
     @Inject(method = "load", at = @At("TAIL"))
     private void onLoad(CompoundTag tag, CallbackInfo ci) {
         if (tag.contains("HT_GreenFlash")) {
@@ -83,27 +116,54 @@ public abstract class TrafficLightBlockEntityMixin implements IGreenFlashConfigu
         } else {
             this.horizontal_traffic$yellowFlashingEnabled = false;
         }
+        if (tag.contains("HT_Countdown")) {
+            this.horizontal_traffic$countdownEnabled = tag.getBoolean("HT_Countdown");
+        } else {
+            this.horizontal_traffic$countdownEnabled = true;
+        }
+        if (tag.contains("HT_CountdownNum")) {
+            this.horizontal_traffic$countdownNumber = tag.getInt("HT_CountdownNum");
+        } else {
+            this.horizontal_traffic$countdownNumber = 0;
+        }
+        if (tag.contains("HT_CountdownIsGreen")) {
+            this.horizontal_traffic$countdownIsGreen = tag.getBoolean("HT_CountdownIsGreen");
+        } else {
+            this.horizontal_traffic$countdownIsGreen = false;
+        }
     }
 
     @Inject(method = "saveAdditional", at = @At("TAIL"))
     private void onSaveAdditional(CompoundTag tag, CallbackInfo ci) {
         tag.putBoolean("HT_GreenFlash", this.horizontal_traffic$greenFlashEnabled);
         tag.putBoolean("HT_YellowFlash", this.horizontal_traffic$yellowFlashingEnabled);
+        tag.putBoolean("HT_Countdown", this.horizontal_traffic$countdownEnabled);
+        tag.putInt("HT_CountdownNum", this.horizontal_traffic$countdownNumber);
+        tag.putBoolean("HT_CountdownIsGreen", this.horizontal_traffic$countdownIsGreen);
     }
 
     @Inject(method = "tick(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V", at = @At("TAIL"))
     private void onTick(Level level, BlockPos pos, BlockState state, CallbackInfo ci) {
         if (level.isClientSide()) return;
+        TrafficLightBlockEntity self = (TrafficLightBlockEntity) (Object) this;
         if (this.horizontal_traffic$yellowFlashingEnabled) {
-            GreenFlashHelper.handleYellowFlashing((TrafficLightBlockEntity) (Object) this, level);
+            GreenFlashHelper.handleYellowFlashing(self, level);
+            GreenFlashHelper.resetCountdown(self);
             return;
         }
         if (this.running && this.getControlType() == TrafficLightControlType.OWN_SCHEDULE) {
-            if (this.horizontal_traffic$greenFlashEnabled && this.schedule != null) {
+            if (this.schedule != null) {
                 int currentTick = Math.max(0, this.ticker - 1);
-                int rem = GreenFlashHelper.getRemainingGreenTicks(this.schedule, currentTick, this.phaseId, false);
-                GreenFlashHelper.handleFlashing((TrafficLightBlockEntity) (Object) this, rem);
+                if (this.horizontal_traffic$greenFlashEnabled) {
+                    int rem = GreenFlashHelper.getRemainingGreenTicks(this.schedule, currentTick, this.phaseId, false);
+                    GreenFlashHelper.handleFlashing(self, rem);
+                }
+                GreenFlashHelper.updateCountdown(self, this.schedule, currentTick, this.phaseId, false);
+            } else {
+                GreenFlashHelper.resetCountdown(self);
             }
+        } else {
+            GreenFlashHelper.resetCountdown(self);
         }
     }
 

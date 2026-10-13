@@ -51,13 +51,15 @@ public abstract class TrafficLightControllerBlockEntityMixin {
                 if (be instanceof TrafficLightBlockEntity light) {
                     if (((IGreenFlashConfigurable) light).isYellowFlashingEnabled()) {
                         GreenFlashHelper.handleYellowFlashing(light, level);
+                        GreenFlashHelper.resetCountdown(light);
                         continue;
                     }
-                    if (((IGreenFlashConfigurable) light).isGreenFlashEnabled()) {
-                        if (light.getControlType() == TrafficLightControlType.REMOTE) {
+                    if (light.getControlType() == TrafficLightControlType.REMOTE) {
+                        if (((IGreenFlashConfigurable) light).isGreenFlashEnabled()) {
                             int rem = GreenFlashHelper.getRemainingGreenTicks(schedule, currentTick, light.getPhaseId(), true);
                             GreenFlashHelper.handleFlashing(light, rem);
                         }
+                        GreenFlashHelper.updateCountdown(light, schedule, currentTick, light.getPhaseId(), true);
                     }
                 }
             }

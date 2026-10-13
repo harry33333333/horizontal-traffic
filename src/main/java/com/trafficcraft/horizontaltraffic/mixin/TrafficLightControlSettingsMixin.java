@@ -37,12 +37,12 @@ public abstract class TrafficLightControlSettingsMixin extends DLGuiComponent {
         });
 
         de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLPanel bottomPanel =
-                new de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLPanel(0, 0, this.width(), 16);
+                new de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLPanel(0, 0, this.width(), 30);
         de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout flowLayout =
                 new de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout();
         flowLayout.flowDirection.set(de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout.Direction.HORIZONTAL);
         flowLayout.padding.set(new de.mrjulsen.mcdragonlib.client.gui.widgets.richtext.Padding(0, 0, 0, 0));
-        flowLayout.wrap.set(false);
+        flowLayout.wrap.set(true);
         bottomPanel.layout.set(flowLayout);
 
         de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLCheckBox greenBox =
@@ -68,6 +68,18 @@ public abstract class TrafficLightControlSettingsMixin extends DLGuiComponent {
             });
         }
         bottomPanel.addComponent(yellowBox);
+
+        de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLCheckBox countdownBox =
+                new de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLCheckBox(0, 0, 95, 14);
+        countdownBox.text.set(net.minecraft.network.chat.Component.translatable("gui.horizontal_traffic.countdown"));
+        if (config instanceof com.trafficcraft.horizontaltraffic.util.IGreenFlashConfigurable flashConfig) {
+            countdownBox.checked.set(flashConfig.isCountdownEnabled());
+            countdownBox.addEventListener(de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLToggleButton.CheckedChangedEvent.class, (comp, evt) -> {
+                flashConfig.setCountdownEnabled(evt.checked());
+                return false;
+            });
+        }
+        bottomPanel.addComponent(countdownBox);
 
         this.addComponent(bottomPanel);
     }

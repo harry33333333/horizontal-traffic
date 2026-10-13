@@ -20,3 +20,8 @@ latest.log
 # System
 .DS_Store
 Thumbs.db
+
+# Scratch and temp files
+scratch*/
+scratch*
+

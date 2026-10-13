@@ -20,6 +20,7 @@ public class TrafficLightPacketMixin implements IGreenFlashConfigurable {
 
     private boolean horizontal_traffic$greenFlashEnabled = true;
     private boolean horizontal_traffic$yellowFlashingEnabled = false;
+    private boolean horizontal_traffic$countdownEnabled = true;
 
     @Override
     public boolean isGreenFlashEnabled() {
@@ -41,16 +42,46 @@ public class TrafficLightPacketMixin implements IGreenFlashConfigurable {
         this.horizontal_traffic$yellowFlashingEnabled = enabled;
     }
 
+    @Override
+    public boolean isCountdownEnabled() {
+        return this.horizontal_traffic$countdownEnabled;
+    }
+
+    @Override
+    public void setCountdownEnabled(boolean enabled) {
+        this.horizontal_traffic$countdownEnabled = enabled;
+    }
+
+    @Override
+    public int getCountdownNumber() {
+        return 0;
+    }
+
+    @Override
+    public void setCountdownNumber(int number) {
+    }
+
+    @Override
+    public boolean isCountdownGreen() {
+        return false;
+    }
+
+    @Override
+    public void setCountdownGreen(boolean isGreen) {
+    }
+
     @Inject(method = "<init>(Lnet/minecraft/core/BlockPos;Ljava/util/Collection;Lde/mrjulsen/trafficcraft/block/data/TrafficLightType;Lde/mrjulsen/trafficcraft/block/data/TrafficLightModel;Lde/mrjulsen/trafficcraft/block/data/TrafficLightIcon;Lde/mrjulsen/trafficcraft/block/data/TrafficLightControlType;[Lde/mrjulsen/trafficcraft/block/data/TrafficLightColor;IZ)V", at = @At("TAIL"))
     private void onInit(CallbackInfo ci) {
         this.horizontal_traffic$greenFlashEnabled = com.trafficcraft.horizontaltraffic.util.GreenFlashHelper.lastConfigGreenFlash;
         this.horizontal_traffic$yellowFlashingEnabled = com.trafficcraft.horizontaltraffic.util.GreenFlashHelper.lastConfigYellowFlash;
+        this.horizontal_traffic$countdownEnabled = com.trafficcraft.horizontaltraffic.util.GreenFlashHelper.lastConfigCountdown;
     }
 
     @Inject(method = "write", at = @At("TAIL"))
     private void onWrite(CompoundTag tag, CallbackInfo ci) {
         tag.putBoolean("HT_GreenFlash", this.horizontal_traffic$greenFlashEnabled);
         tag.putBoolean("HT_YellowFlash", this.horizontal_traffic$yellowFlashingEnabled);
+        tag.putBoolean("HT_Countdown", this.horizontal_traffic$countdownEnabled);
     }
 
     @Inject(method = "read", at = @At("TAIL"))
@@ -65,6 +96,11 @@ public class TrafficLightPacketMixin implements IGreenFlashConfigurable {
         } else {
             this.horizontal_traffic$yellowFlashingEnabled = false;
         }
+        if (tag.contains("HT_Countdown")) {
+            this.horizontal_traffic$countdownEnabled = tag.getBoolean("HT_Countdown");
+        } else {
+            this.horizontal_traffic$countdownEnabled = true;
+        }
     }
 
     @Inject(method = "handle", at = @At("TAIL"), remap = false)
@@ -78,6 +114,7 @@ public class TrafficLightPacketMixin implements IGreenFlashConfigurable {
                 if (be instanceof IGreenFlashConfigurable flashBe && packet instanceof IGreenFlashConfigurable flashPacket) {
                     flashBe.setGreenFlashEnabled(flashPacket.isGreenFlashEnabled());
                     flashBe.setYellowFlashingEnabled(flashPacket.isYellowFlashingEnabled());
+                    flashBe.setCountdownEnabled(flashPacket.isCountdownEnabled());
                     be.setChanged();
                 }
 

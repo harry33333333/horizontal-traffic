@@ -46,11 +46,16 @@ public class HorizontalTrafficLightBlockEntityRenderer extends RotatableBlockEnt
             bulbXOffsets = new float[]{ 6.0f };
         }
 
+        int yellowSlotIndex = -1;
         for (int i = 0; i < be.getColorSlotCount() && i < lightCount && i < bulbXOffsets.length; i++) {
+            TrafficLightColor slotColor = be.getColorOfSlot(i);
+            if (slotColor == TrafficLightColor.YELLOW || (slotColor != null && slotColor.isSimilar(TrafficLightColor.YELLOW))) {
+                yellowSlotIndex = i;
+            }
+
             graphics.poseStack().pushPose();
             graphics.poseStack().translate(bulbXOffsets[i], bulbY, 5.5f);
 
-            TrafficLightColor slotColor = be.getColorOfSlot(i);
             if (slotColor != null && be.isColorEnabled(slotColor, true)) {
                 new TrafficLightTextureManager.TrafficLightTextureKey(be.getIcon(), slotColor)
                         .render(graphics, be, net.minecraft.client.renderer.LightTexture.FULL_BRIGHT);
@@ -58,6 +63,13 @@ public class HorizontalTrafficLightBlockEntityRenderer extends RotatableBlockEnt
                 new TrafficLightTextureManager.TrafficLightTextureKey(TrafficLightIcon.NONE, TrafficLightColor.NONE)
                         .render(graphics, be, graphics.packedLight());
             }
+            graphics.poseStack().popPose();
+        }
+
+        if (yellowSlotIndex >= 0 && yellowSlotIndex < bulbXOffsets.length) {
+            graphics.poseStack().pushPose();
+            graphics.poseStack().translate(bulbXOffsets[yellowSlotIndex], bulbY, 5.5f);
+            CountdownRenderer.renderCountdown(graphics, be);
             graphics.poseStack().popPose();
         }
     }

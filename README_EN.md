@@ -24,9 +24,16 @@ It introduces realistic **horizontal traffic lights** (signals arranged horizont
 - **Signal Controller Linking**: Full support for `Traffic Light Linker` to bind/unbind traffic lights to `Traffic Light Controller`.
 - **All Signal Modes Supported**: STATIC, OWN_SCHEDULE, and REMOTE controller modes.
 - **Auto-Saving Phase IDs**: Eliminates the vanilla issue where pressing ESC without hitting Enter discards Phase ID changes. Input changes are automatically committed and synced in real-time.
-- **Icons & Countdown Animations**: Complete support for countdown numbers, directional turn arrows (straight, left, right, divergent arrows), and green flashing animations.
+- **Icons & Flashing Animations**: Complete support for directional turn arrows (straight, left, right, divergent arrows) and green flashing animations.
 
-### 3. Aftersans53228's Fabric Roads (`aft_fabroads`) Ecosystem Integration
+### 3. Integrated Digital Countdown Display
+- **Yellow Lens Countdown (1–9s)**: Displays a single-digit countdown timer on the center yellow aspect counting down from 9s to 1s before changing phase (Red phase counts down in glowing Red, Green phase counts down in glowing Green; Yellow phase does not count down).
+- **Synchronized Green Flashing**: In the final 3 seconds of Green phase (3, 2, 1), the countdown digit flashes in exact synchronization with the green lamp if green flashing is enabled (or stays steadily lit if green flashing is disabled).
+- **Dual Orientation & Two-Aspect Support**: Works seamlessly on both horizontal triple lights and vanilla TrafficCraft vertical lights. Automatically omitted on two-aspect signals (such as pedestrian lights without a yellow aspect).
+- **Independent Control & Seamless Upgrades**: Each traffic light has its own independent countdown switch, accessible via the GUI. Enabled by default; existing worlds and blocks automatically default to enabled upon upgrading the mod.
+- **Centered Full-Bright Rendering**: Rendered with Minecraft's built-in font precisely centered on the yellow bulb surface at Full Bright light level for optimal daytime and nighttime visibility.
+
+### 4. Aftersans53228's Fabric Roads (`aft_fabroads`) Ecosystem Integration
 - **T-Pillar Auto-Mounting**: Right-clicking a T-shaped pillar (`HorizontalTshapedPillar`, `VerticalTshapedPillar`, etc.) with a horizontal traffic light automatically snaps it to the stem end facing the player.
 - **Full 8-Directional / 45° Diagonal Support**:
   - Supports horizontal traffic lights, directional pillars, and road signs (`SignNormal`).

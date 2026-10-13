@@ -6,4 +6,13 @@ public interface IGreenFlashConfigurable {
 
     boolean isYellowFlashingEnabled();
     void setYellowFlashingEnabled(boolean enabled);
+
+    boolean isCountdownEnabled();
+    void setCountdownEnabled(boolean enabled);
+
+    int getCountdownNumber();
+    void setCountdownNumber(int number);
+
+    boolean isCountdownGreen();
+    void setCountdownGreen(boolean isGreen);
 }

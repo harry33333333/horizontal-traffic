@@ -31,6 +31,7 @@ public abstract class TrafficLightConfigScreenMixin extends DLWindow {
         if (config instanceof com.trafficcraft.horizontaltraffic.util.IGreenFlashConfigurable flashConfig) {
             com.trafficcraft.horizontaltraffic.util.GreenFlashHelper.lastConfigGreenFlash = flashConfig.isGreenFlashEnabled();
             com.trafficcraft.horizontaltraffic.util.GreenFlashHelper.lastConfigYellowFlash = flashConfig.isYellowFlashingEnabled();
+            com.trafficcraft.horizontaltraffic.util.GreenFlashHelper.lastConfigCountdown = flashConfig.isCountdownEnabled();
         }
         try {
             List<DLNumberPicker> pickers = new ArrayList<>();
@@ -77,6 +78,7 @@ public abstract class TrafficLightConfigScreenMixin extends DLWindow {
                         && blockEntity instanceof com.trafficcraft.horizontaltraffic.util.IGreenFlashConfigurable flashBe) {
                     flashBe.setGreenFlashEnabled(flashConfig.isGreenFlashEnabled());
                     flashBe.setYellowFlashingEnabled(flashConfig.isYellowFlashingEnabled());
+                    flashBe.setCountdownEnabled(flashConfig.isCountdownEnabled());
                 }
             }
         }

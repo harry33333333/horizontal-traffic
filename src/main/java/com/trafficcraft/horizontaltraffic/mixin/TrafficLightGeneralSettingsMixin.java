@@ -21,7 +21,7 @@ public class TrafficLightGeneralSettingsMixin {
         adjustIconPanel();
 
         de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLPanel bottomPanel =
-                new de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLPanel(0, 0, 146, 16);
+                new de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLPanel(0, 0, 146, 30);
         FlowLayout flowLayout = new FlowLayout();
         flowLayout.flowDirection.set(FlowLayout.Direction.HORIZONTAL);
         flowLayout.padding.set(new de.mrjulsen.mcdragonlib.client.gui.widgets.richtext.Padding(0, 0, 0, 0));
@@ -51,6 +51,18 @@ public class TrafficLightGeneralSettingsMixin {
             });
         }
         bottomPanel.addComponent(yellowBox);
+
+        de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLCheckBox countdownBox =
+                new de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLCheckBox(0, 0, 146, 14);
+        countdownBox.text.set(net.minecraft.network.chat.Component.translatable("gui.horizontal_traffic.countdown"));
+        if (config instanceof com.trafficcraft.horizontaltraffic.util.IGreenFlashConfigurable flashConfig) {
+            countdownBox.checked.set(flashConfig.isCountdownEnabled());
+            countdownBox.addEventListener(de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLToggleButton.CheckedChangedEvent.class, (comp, evt) -> {
+                flashConfig.setCountdownEnabled(evt.checked());
+                return false;
+            });
+        }
+        bottomPanel.addComponent(countdownBox);
 
         ((de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLGuiComponent) (Object) this).addComponent(bottomPanel);
     }
